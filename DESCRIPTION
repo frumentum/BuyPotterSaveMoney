@@ -1,0 +1,15 @@
+Package: BuyPotterSaveMoney
+Type: Package
+Title: Calculates the best discount within a shopping cart
+Version: 0.1.0
+Author: Simon Pöschl
+Maintainer: Simon Pöschl <frumentum@posteo.de>
+Description: As an example the first five books about Harry Potter are used for
+calculating the discount. Discount will be given if different books are bought.
+License: GPL
+Encoding: UTF-8
+LazyData: true
+Imports: dplyr,
+    tidyr,
+    partitions
+Suggests: testthat
