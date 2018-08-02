@@ -15,3 +15,4 @@ Imports: dplyr,
     partitions,
     magrittr
 Suggests: testthat
+RoxygenNote: 6.1.0
