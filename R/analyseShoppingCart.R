@@ -43,19 +43,22 @@ analyseShoppingCart <- function(shoppingCart, ...) {
   itemsInTotal <- sum(groupedShoppingCart$n)
   # number of rows represents the number of different items we have
   numberOfDifferentItems <- nrow(groupedShoppingCart)
-  # And how often was the item bought which was bought the most?
+  # And how often was the item bought which was bought most?
   maxNumberPerItem <- max(groupedShoppingCart$n)
   # probably there are more than one item with the same 'maximum number per
   # item'?
   numberOfMaxima <- groupedShoppingCart %>%
     dplyr::filter(n == maxNumberPerItem) %>%
     nrow()
+  # And how often was the item bought which was bought least?
+  minNumberPerItem <- min(groupedShoppingCart$n)
 
   return(list(
     "itemsInTotal" = itemsInTotal,
     "numberOfDifferentItems" = numberOfDifferentItems,
     "maxNumberPerItem" = maxNumberPerItem,
-    "numberOfMaxima" = numberOfMaxima
+    "numberOfMaxima" = numberOfMaxima,
+    "minNumberPerItem" = minNumberPerItem
   ))
 
 }

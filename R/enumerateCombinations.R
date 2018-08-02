@@ -43,7 +43,7 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
   stopifnot(
     c(
       "itemsInTotal", "numberOfDifferentItems", "maxNumberPerItem",
-      "numberOfMaxima"
+      "numberOfMaxima", "minNumberPerItem"
     ) %in% names(listFromASC)
   )
 
@@ -67,6 +67,9 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
   filterPossibleCombinations <- which(
     everyCombination[ls$maxNumberPerItem,] >= ls$numberOfMaxima
   )
+  filterMoreCombinations <- which(
+    everyCombination
+  )
   # only the intersection of those filters is interesting
   intersection <- dplyr::intersect(
     filterDifferentItems, filterPossibleCombinations
@@ -75,6 +78,8 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
     , # take every row = every summand, but ...
     intersection # only these columns
   ]
+  # bug fix: output shall always be a matrix
+  if (length(intersection) == 1) alternatives <- as.matrix(alternatives)
 
   if (isTRUE(intermediateSteps)) {
     intermediateSteps <- list(
