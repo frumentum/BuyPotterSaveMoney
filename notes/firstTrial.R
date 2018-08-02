@@ -1,5 +1,4 @@
-library(tidyverse)
-books <- tibble(
+books <- dplyr::tibble(
   itemID = 1:5,
   name = c(
     "Stein der Weisen",
@@ -11,8 +10,8 @@ books <- tibble(
 )
 
 set.seed(1)
-shoppingCart <- sample_n(books, 8, replace = TRUE) %>%
-  arrange(itemID)
+shoppingCart <- dplyr::sample_n(books, 8, replace = TRUE) %>%
+  dplyr::arrange(itemID)
 
 groupedShoppingCart <- count(shoppingCart, itemID, name)
 
