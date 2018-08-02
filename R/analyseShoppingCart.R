@@ -52,13 +52,17 @@ analyseShoppingCart <- function(shoppingCart, ...) {
     nrow()
   # And how often was the item bought which was bought least?
   minNumberPerItem <- min(groupedShoppingCart$n)
+  numberOfMinima <- groupedShoppingCart %>%
+    dplyr::filter(n == minNumberPerItem) %>%
+    nrow()
 
   return(list(
     "itemsInTotal" = itemsInTotal,
     "numberOfDifferentItems" = numberOfDifferentItems,
     "maxNumberPerItem" = maxNumberPerItem,
     "numberOfMaxima" = numberOfMaxima,
-    "minNumberPerItem" = minNumberPerItem
+    "minNumberPerItem" = minNumberPerItem,
+    "numberOfMinima" = numberOfMinima
   ))
 
 }

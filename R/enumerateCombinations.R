@@ -55,24 +55,31 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
   ))
 
   ### let's filter
-  # no bigger set of combinations is possible than we have different items in
-  # the shopping cart
+  # No bigger set of combinations is possible than we have different items in
+  # the shopping cart. That means that the first summand need to be lower or
+  # equal to the number of different items.
   filterDifferentItems <- which(
     everyCombination[1,] <= listFromASC$numberOfDifferentItems
   )
-  # and filter impossible combinations, eg the combination 3* 1st book, 3*2nd
+  # Filter impossible combinations, eg the combination 3* 1st book, 3*2nd
   # book, 3*3rd book and 1*4th book: 4 discount + 2*3 discount, but not possible
   # is 2*4 discount + 1*2 discount
   ls <- listFromASC # to make name shorter
   filterPossibleCombinations <- which(
     everyCombination[ls$maxNumberPerItem,] >= ls$numberOfMaxima
   )
+  # 'Discount sets' of size 'number of different items' can only occur as often
+  # as the number of minima. Eg the combination 5,4,1 may result in the sums
+  # 3,2,2,2,1 and 2,2,2,2,2 but not in 3,3,2,1,1
   filterMoreCombinations <- which(
-    everyCombination
+    everyCombination[1 + ls$numberOfMinima,] < ls$numberOfDifferentItems
   )
   # only the intersection of those filters is interesting
   intersection <- dplyr::intersect(
     filterDifferentItems, filterPossibleCombinations
+  )
+  intersection <- dplyr::intersect(
+    intersection, filterMoreCombinations
   )
   alternatives <- everyCombination[
     , # take every row = every summand, but ...
@@ -86,6 +93,7 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
       everyCombination = everyCombination,
       filterForDifferentItems = filterDifferentItems,
       filterForPossibleCombinations = filterPossibleCombinations,
+      filterMoreCombinations = filterMoreCombinations,
       intersection = intersection
     )
 
