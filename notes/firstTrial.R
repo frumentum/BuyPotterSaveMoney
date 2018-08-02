@@ -26,7 +26,7 @@ alternatives <- restrictedparts(totalBooks, maxNumberPerBook)
 # no bigger set possible than we have different books
 filterForDifBooks <- which(alternatives[1,] <= differentBooks)
 # and filter impossible combinations
-filterForPosComb <- which(alternatives[3,] >= numberOfMaxima)
+filterForPosComb <- which(alternatives[maxNumberPerBook,] >= numberOfMaxima)
 alternatives <- alternatives[, intersect(filterForDifBooks, filterForPosComb)]
 
 fourCombn <- combn(shoppingCart$name, 4) %>%
