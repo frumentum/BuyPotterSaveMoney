@@ -28,14 +28,17 @@ test_that(
     ls <- analyseShoppingCart(shoppingCart, itemID, name)
 
     # enumerate combinations and test the output
-    tmpResult <- enumerateCombinations(ls, intermediateSteps == FALSE)
-    tmpResultT <- enumerateCombinations(ls, intermediateSteps == TRUE)
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     # The output format should be different if intermediate steps are returned
     expect_is(tmpResult, "matrix")
     expect_is(tmpResultT, "list")
+    expect_equal(names(tmpResultT), c("alternatives", "intermediateSteps"))
     expect_is(tmpResultT$intermediateSteps, "list")
-    expect_equal(tmpResult, tmpResultT$combinations)
+    expect_equal(tmpResult, tmpResultT$alternatives)
+    # only our list type is accepted
+    expect_error(enumerateCombinations(list(a = 1)) )
 
     ### interesting expecations
     # To understand the following procedure: Most of the possible discount

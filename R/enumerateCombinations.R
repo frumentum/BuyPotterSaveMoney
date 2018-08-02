@@ -7,7 +7,7 @@
 #' @param listFromASC list as it comes from \code{analyseShoppingCart()}
 #' @param intermediateSteps logical; if TRUE, additionally a list is returned
 #' which contains the intermediate steps. More in details; default is FALSE
-#' @detalis
+#' @details
 #' If \code{intermediateSteps} is set to \code{TRUE}, the output of this
 #' function will change to a list of length 2. The first element will be the
 #' same matrix as it is produced normally. The second element is a list
@@ -38,6 +38,58 @@
 
 enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
 
+  # at first an important security check if the list is really the one which is
+  # expected
+  stopifnot(
+    c(
+      "itemsInTotal", "numberOfDifferentItems", "maxNumberPerItem",
+      "numberOfMaxima"
+    ) %in% names(listFromASC)
+  )
 
+
+  ### enumerate all combinations
+  everyCombination <- as.matrix(partitions::restrictedparts(
+    listFromASC$itemsInTotal,
+    listFromASC$maxNumberPerItem
+  ))
+
+  ### let's filter
+  # no bigger set of combinations is possible than we have different items in
+  # the shopping cart
+  filterDifferentItems <- which(
+    everyCombination[1,] <= listFromASC$numberOfDifferentItems
+  )
+  # and filter impossible combinations, eg the combination 3* 1st book, 3*2nd
+  # book, 3*3rd book and 1*4th book: 4 discount + 2*3 discount, but not possible
+  # is 2*4 discount + 1*2 discount
+  ls <- listFromASC # to make name shorter
+  filterPossibleCombinations <- which(
+    everyCombination[ls$maxNumberPerItem,] >= ls$numberOfMaxima
+  )
+  # only the intersection of those filters is interesting
+  intersection <- dplyr::intersect(
+    filterDifferentItems, filterPossibleCombinations
+  )
+  alternatives <- everyCombination[
+    , # take every row = every summand, but ...
+    intersection # only these columns
+  ]
+
+  if (isTRUE(intermediateSteps)) {
+    intermediateSteps <- list(
+      everyCombination = everyCombination,
+      filterForDifferentItems = filterDifferentItems,
+      filterForPossibleCombinations = filterPossibleCombinations,
+      intersection = intersection
+    )
+
+    return(list(
+      alternatives = alternatives,
+      intermediateSteps = intermediateSteps
+    ))
+  } else {
+    return(alternatives)
+  }
 
 }
