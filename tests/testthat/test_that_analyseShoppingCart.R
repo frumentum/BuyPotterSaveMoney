@@ -40,5 +40,11 @@ test_that(
     expect_equal(namesOfInformation[2], "numberOfDifferentItems")
     expect_equal(namesOfInformation[3], "maxNumberPerItem")
     expect_equal(namesOfInformation[4], "numberOfMaxima")
+
+    # and are the numbers the right ones?
+    expect_equal(tmpResult[[1]], 8) # 8 books in total
+    expect_equal(tmpResult[[2]], 4) # 4 different books
+    expect_equal(tmpResult[[3]], 3) # 3 books are the maximum ...
+    expect_equal(tmpResult[[4]], 2) # ... and two times 3 books were bought
   }
 )
