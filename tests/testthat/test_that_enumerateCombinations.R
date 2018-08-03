@@ -561,6 +561,40 @@ test_that(
 )
 
 test_that(
+  "enumerateCombinations() specially for combination 4,4,3,2,1",
+  {
+    # create first test shopping cart with the combination 4,4,3,2,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[3, ],
+      books[5, ],
+      books[5, ],
+      books[4, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 2) # 2 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(5,4,3,2)) # first column
+    expect_equal(tmpResult[, 2], c(4,4,4,2)) # second column
+  }
+)
+
+test_that(
   "enumerateCombinations() specially for combination 2,2,2,1,1",
   {
     # create first test shopping cart with the combination 2,2,2,1,1
