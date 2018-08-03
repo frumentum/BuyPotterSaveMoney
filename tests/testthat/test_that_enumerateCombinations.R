@@ -155,7 +155,7 @@ test_that(
 test_that(
   "enumerateCombinations() specially for combination 5,4,1",
   {
-    # create first test shopping cart with the combination 5,1
+    # create first test shopping cart with the combination 5,4,1
     shoppingCart <- dplyr::bind_rows(
       books[2, ],
       books[2, ],
@@ -196,7 +196,7 @@ test_that(
 test_that(
   "enumerateCombinations() specially for combination 5,4,1,1",
   {
-    # create first test shopping cart with the combination 5,1
+    # create first test shopping cart with the combination 5,4,1,1
     shoppingCart <- dplyr::bind_rows(
       books[2, ],
       books[2, ],
@@ -217,10 +217,11 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 2) # 2 column in this example
+    expect_equal(ncol(tmpResult), 3) # 3 column in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(4,2,2,2,1)) # first column
     expect_equal(tmpResult[, 2], c(3,3,2,2,1)) # second column
+    expect_equal(tmpResult[, 3], c(3,2,2,2,2)) # third column
 
     # test intermediate steps
     # iS <- tmpResultT$intermediateSteps
@@ -232,5 +233,388 @@ test_that(
     #   iS$filterMoreCombinations, c(1,2,3,7,8,11,15,16,19,22,24,25,27,29,30)
     # )
     # expect_equal(iS$intersection, c(29, 30))
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,1,1,1",
+  {
+    # create first test shopping cart with the combination 5,4,1,1,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[4, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 3) # 3 column in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(5,2,2,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(4,3,2,2,1)) # second column
+    expect_equal(tmpResult[, 3], c(3,3,3,2,1)) # third column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,2",
+  {
+    # create first test shopping cart with the combination 5,4,2
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 2) # 2 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(3,3,2,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(3,2,2,2,2)) # second column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,2,2",
+  {
+    # create first test shopping cart with the combination 5,4,2,2
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[4, ],
+      books[4, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 5) # 5 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(4,4,2,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(4,3,3,2,1)) # second column
+    expect_equal(tmpResult[, 3], c(3,3,3,3,1)) # third column
+    expect_equal(tmpResult[, 4], c(4,3,2,2,2)) # fourth column
+    expect_equal(tmpResult[, 5], c(3,3,3,2,2)) # fifth column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,2,2,2",
+  {
+    # create first test shopping cart with the combination 5,4,2,2,2
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[4, ],
+      books[4, ],
+      books[5, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 10) # 10 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(5,5,2,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(5,4,3,2,1)) # second column
+    expect_equal(tmpResult[, 3], c(4,4,4,2,1)) # third column
+    expect_equal(tmpResult[, 4], c(5,3,3,3,1)) # 4th column
+    expect_equal(tmpResult[, 5], c(4,4,3,3,1)) # 5th column
+    expect_equal(tmpResult[, 6], c(5,4,2,2,2)) # 6th column
+    expect_equal(tmpResult[, 7], c(5,3,3,2,2)) # 7th column
+    expect_equal(tmpResult[, 8], c(4,4,3,2,2)) # 8th column
+    expect_equal(tmpResult[, 9], c(4,3,3,3,2)) # 9th column
+    expect_equal(tmpResult[, 10], c(3,3,3,3,3)) # 10th column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,3,3,3",
+  {
+    # create first test shopping cart with the combination 5,4,3,3,3
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[3, ],
+      books[4, ],
+      books[4, ],
+      books[4, ],
+      books[5, ],
+      books[5, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 10) # 10 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(5,5,2,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(5,4,3,2,1)) # second column
+    expect_equal(tmpResult[, 3], c(4,4,4,2,1)) # third column
+    expect_equal(tmpResult[, 4], c(5,3,3,3,1)) # 4th column
+    expect_equal(tmpResult[, 5], c(4,4,3,3,1)) # 5th column
+    expect_equal(tmpResult[, 6], c(5,4,2,2,2)) # 6th column
+    expect_equal(tmpResult[, 7], c(5,3,3,2,2)) # 7th column
+    expect_equal(tmpResult[, 8], c(4,4,3,2,2)) # 8th column
+    expect_equal(tmpResult[, 9], c(4,3,3,3,2)) # 9th column
+    expect_equal(tmpResult[, 10], c(3,3,3,3,3)) # 10th column
+  }
+)
+
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,3,2,1",
+  {
+    # create first test shopping cart with the combination 5,4,3,2,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[3, ],
+      books[4, ],
+      books[4, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 9) # 9 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(5,4,3,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(4,4,4,2,1)) # second column
+    expect_equal(tmpResult[, 3], c(5,3,3,3,1)) # third column
+    expect_equal(tmpResult[, 4], c(4,4,3,3,1)) # 4th column
+    expect_equal(tmpResult[, 5], c(5,4,2,2,2)) # 5th column
+    expect_equal(tmpResult[, 6], c(5,3,3,2,2)) # 6th column
+    expect_equal(tmpResult[, 7], c(4,4,3,2,2)) # 7th column
+    expect_equal(tmpResult[, 8], c(4,3,3,3,2)) # 8th column
+    expect_equal(tmpResult[, 9], c(3,3,3,3,3)) # 9th column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 3,3,3,1",
+  {
+    # create first test shopping cart with the combination 3,3,3,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[3, ],
+      books[4, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 1) # only 1 column in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(4,3,3))
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 4,3,3,1",
+  {
+    # create first test shopping cart with the combination 4,3,3,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[3, ],
+      books[3, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 3) # 3 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(4,3,3,1)) # first column
+    expect_equal(tmpResult[, 2], c(4,3,2,2)) # second column
+    expect_equal(tmpResult[, 3], c(3,3,3,2)) # third column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 4,4,1,1",
+  {
+    # create first test shopping cart with the combination 4,4,1,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 2) # 3 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(4,2,2,2)) # first column
+    expect_equal(tmpResult[, 2], c(3,3,2,2)) # second column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 2,2,2,1,1",
+  {
+    # create first test shopping cart with the combination 2,2,2,1,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[4, ],
+      books[4, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 2) # 2 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(5,3)) # first column
+    expect_equal(tmpResult[, 2], c(4,4)) # second column
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,3,2,1",
+  {
+    # create first test shopping cart with the combination 5,3,2,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[4, ],
+      books[4, ],
+      books[4, ],
+      books[1, ],
+      books[1, ],
+      books[5, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 3) # 3 columns in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(4,3,3,1)) # first column
+    expect_equal(tmpResult[, 2], c(4,3,2,2)) # second column
+    expect_equal(tmpResult[, 3], c(3,3,3,2)) # third column
   }
 )

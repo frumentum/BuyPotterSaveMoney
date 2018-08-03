@@ -10,30 +10,39 @@
 #' @details
 #' If \code{intermediateSteps} is set to \code{TRUE}, the output of this
 #' function will change to a list of length 2. The first element will be the
-#' same matrix as it is produced normally. The second element is a list
-#' containing the intermediate steps which are done inside of this function.
+#' same matrix as it is produced with \code{intermediateSteps == FALSE}. The
+#' second element is a list containing the intermediate steps which are done
+#' within this function. These steps include:
+#' 1. Enumerate every possible partition using
+#'    \code{partitions::restrictedparts()}.
+#' 2. filter1: Since we have only up to five different items in the shopping
+#'    cart and discount is given for the items' dissimilarity, the greatest
+#'    'discount set' can be the number of different items in the shopping cart.
+#' 3. filter2:
 #' @return
 #' Depending on \code{intermediateSteps} a matrix or a list is returned. Matrix
 #' represents the combinations which shall be used for calculating the discount.
 #' @examples
+#' ```
 #' ### setup
 #' books <- dplyr::tibble(
-#' itemID = 1:5,
-#' name = c(
-#' "Stein der Weisen",
-#' "Kammer des Schreckens",
-#' "Gefangene von Askaban",
-#' "Feuerkelch",
-#' "Orden des Phönix"
-#' )
+#'   itemID = 1:5,
+#'   name = c(
+#'     "Stein der Weisen",
+#'     "Kammer des Schreckens",
+#'     "Gefangene von Askaban",
+#'     "Feuerkelch",
+#'     "Orden des Phönix"
+#'   )
 #' )
 
-#' set.seed(1)
+#' set.seed(1) # for reproducibility
 #' shoppingCart <- dplyr::sample_n(books, 8, replace = TRUE)
 #' shoppingCart <- dplyr::arrange(shoppingCart, itemID)
 #' ls <- analyseShoppingCart(shoppingCart, itemID, name)
 #' ### end of setup
 #' enumerateCombinations(ls)
+#' ```
 #' @export
 
 enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
@@ -47,10 +56,15 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
     ) %in% names(listFromASC)
   )
 
-
+  # numberOfSummands <- ifelse(
+  #   listFromASC$maxNumberPerItem >= listFromASC$numberOfDifferentItems,
+  #   listFromASC$maxNumberPerItem,
+  #   listFromASC$numberOfDifferentItems
+  # )
   ### enumerate all combinations
   everyCombination <- as.matrix(partitions::restrictedparts(
     listFromASC$itemsInTotal,
+    # numberOfSummands
     listFromASC$maxNumberPerItem
   ))
 
@@ -72,7 +86,7 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
   # as the number of minima. Eg the combination 5,4,1 may result in the sums
   # 3,2,2,2,1 and 2,2,2,2,2 but not in 3,3,2,1,1
   filterMoreCombinations <- which(
-    everyCombination[1 + ls$numberOfMinima,] < ls$numberOfDifferentItems
+    everyCombination[1 + ls$minNumberPerItem,] < ls$numberOfDifferentItems
   )
   # only the intersection of those filters is interesting
   intersection <- dplyr::intersect(
