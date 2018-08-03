@@ -1,19 +1,20 @@
 context("test_that_enumerateCombinations")
 
+# These books are available in the shop
+books <- dplyr::tibble(
+  itemID = 1:5,
+  name = c(
+    "Stein der Weisen",
+    "Kammer des Schreckens",
+    "Gefangene von Askaban",
+    "Feuerkelch",
+    "Orden des Phönix"
+  )
+)
+
 test_that(
   "enumerate possible combinations based on restricted partitions",
   {
-    # These books are available in the shop
-    books <- dplyr::tibble(
-      itemID = 1:5,
-      name = c(
-        "Stein der Weisen",
-        "Kammer des Schreckens",
-        "Gefangene von Askaban",
-        "Feuerkelch",
-        "Orden des Phönix"
-      )
-    )
     # create first test shopping cart with the combination 3,1,1,3
     shoppingCart <- dplyr::bind_rows(
       books[2, ],
@@ -84,17 +85,6 @@ test_that(
 test_that(
   "enumerateCombinations() specially for combination 3,1,1,3",
   {
-    # These books are available in the shop
-    books <- dplyr::tibble(
-      itemID = 1:5,
-      name = c(
-        "Stein der Weisen",
-        "Kammer des Schreckens",
-        "Gefangene von Askaban",
-        "Feuerkelch",
-        "Orden des Phönix"
-      )
-    )
     # create first test shopping cart with the combination 3,1,1,3
     shoppingCart <- dplyr::bind_rows(
       books[2, ],
@@ -132,17 +122,6 @@ test_that(
 test_that(
   "enumerateCombinations() specially for combination 5,1",
   {
-    # These books are available in the shop
-    books <- dplyr::tibble(
-      itemID = 1:5,
-      name = c(
-        "Stein der Weisen",
-        "Kammer des Schreckens",
-        "Gefangene von Askaban",
-        "Feuerkelch",
-        "Orden des Phönix"
-      )
-    )
     # create first test shopping cart with the combination 5,1
     shoppingCart <- dplyr::bind_rows(
       books[2, ],
@@ -176,17 +155,6 @@ test_that(
 test_that(
   "enumerateCombinations() specially for combination 5,4,1",
   {
-    # These books are available in the shop
-    books <- dplyr::tibble(
-      itemID = 1:5,
-      name = c(
-        "Stein der Weisen",
-        "Kammer des Schreckens",
-        "Gefangene von Askaban",
-        "Feuerkelch",
-        "Orden des Phönix"
-      )
-    )
     # create first test shopping cart with the combination 5,1
     shoppingCart <- dplyr::bind_rows(
       books[2, ],
@@ -213,11 +181,56 @@ test_that(
     expect_equal(tmpResult[,2], c(2,2,2,2,2)) # second column
 
     # test intermediate steps
+    iS <- tmpResultT$intermediateSteps
+    expect_equal(ncol(iS$everyCombination), 30) # 30 columns
+    expect_equal(nrow(iS$everyCombination), 5) # 5 rows
+    expect_equal(iS$filterForDifferentItems, c(21, 23, 28, 29, 30))
+    expect_equal(iS$filterForPossibleCombinations, c(24:30))
+    expect_equal(
+      iS$filterMoreCombinations, c(1,2,3,7,8,11,15,16,19,22,24,25,27,29,30)
+    )
+    expect_equal(iS$intersection, c(29, 30))
+  }
+)
+
+test_that(
+  "enumerateCombinations() specially for combination 5,4,1,1",
+  {
+    # create first test shopping cart with the combination 5,1
+    shoppingCart <- dplyr::bind_rows(
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[2, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[1, ],
+      books[3, ],
+      books[4, ]
+    )
+    # analyse shopping cart at first
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate combinations and test the output
+    tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
+    tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    ### start testing
+    expect_equal(ncol(tmpResult), 2) # 2 column in this example
+    # output numbers shall be as follows
+    expect_equal(tmpResult[, 1], c(4,2,2,2,1)) # first column
+    expect_equal(tmpResult[, 2], c(3,3,2,2,1)) # second column
+
+    # test intermediate steps
     # iS <- tmpResultT$intermediateSteps
-    # expect_equal(ncol(iS$everyCombination), 10) # 10 columns
+    # expect_equal(ncol(iS$everyCombination), 30) # 30 columns
     # expect_equal(nrow(iS$everyCombination), 5) # 5 rows
-    # expect_equal(iS$filterForDifferentItems, c(7,9,10)) # possible columns
-    # expect_equal(iS$filterForPossibleCombinations, 10) # possible columns
-    # expect_equal(iS$intersection, 10)
+    # expect_equal(iS$filterForDifferentItems, c(21, 23, 28, 29, 30))
+    # expect_equal(iS$filterForPossibleCombinations, c(24:30))
+    # expect_equal(
+    #   iS$filterMoreCombinations, c(1,2,3,7,8,11,15,16,19,22,24,25,27,29,30)
+    # )
+    # expect_equal(iS$intersection, c(29, 30))
   }
 )

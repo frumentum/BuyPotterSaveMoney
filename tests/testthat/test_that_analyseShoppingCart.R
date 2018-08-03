@@ -1,3 +1,5 @@
+context("test_that_analyseShoppingCart")
+
 # following tests are for the wrapper function 'analyseShoppingCart'
 test_that(
   "analyseShoppingCart returns a list with four information, combination
