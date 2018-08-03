@@ -56,13 +56,19 @@ analyseShoppingCart <- function(shoppingCart, ...) {
     dplyr::filter(n == minNumberPerItem) %>%
     nrow()
 
+  # add number of items as a vector
+  numbersOfEveryItem <- groupedShoppingCart %>%
+    dplyr::arrange(dplyr::desc(n)) %>%
+    dplyr::pull(n)
+
   return(list(
     "itemsInTotal" = itemsInTotal,
     "numberOfDifferentItems" = numberOfDifferentItems,
     "maxNumberPerItem" = maxNumberPerItem,
     "numberOfMaxima" = numberOfMaxima,
     "minNumberPerItem" = minNumberPerItem,
-    "numberOfMinima" = numberOfMinima
+    "numberOfMinima" = numberOfMinima,
+    "numbersOfEveryItem" = numbersOfEveryItem
   ))
 
 }

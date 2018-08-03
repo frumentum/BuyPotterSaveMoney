@@ -32,7 +32,7 @@ test_that(
     # shall be class list...
     expect_is(tmpResult, "list")
     # shall contain four integer informtion...
-    expect_length(tmpResult, 6)
+    expect_length(tmpResult, 7)
     expect_is(unlist(tmpResult), "integer")
     # these information are named as characters...
     namesOfInformation <- names(unlist(tmpResult))
@@ -44,6 +44,7 @@ test_that(
     expect_equal(namesOfInformation[4], "numberOfMaxima")
     expect_equal(namesOfInformation[5], "minNumberPerItem")
     expect_equal(namesOfInformation[6], "numberOfMinima")
+    # expect_equal(namesOfInformation[7], "numberOfEveryItem")
 
     # and are the numbers the right ones?
     expect_equal(tmpResult[[1]], 8) # 8 books in total
@@ -52,5 +53,6 @@ test_that(
     expect_equal(tmpResult[[4]], 2) # ... and two times 3 books were bought
     expect_equal(tmpResult[[5]], 1) # and books 3 and 5 were bought only ones
     expect_equal(tmpResult[[6]], 2) # and 2 times only 1 book was bought
+    expect_equal(tmpResult[[7]], c(3,3,1,1)) # 3*1st + 3*2nd + 1*3rd + 1*4th
   }
 )

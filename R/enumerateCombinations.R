@@ -56,15 +56,9 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
     ) %in% names(listFromASC)
   )
 
-  # numberOfSummands <- ifelse(
-  #   listFromASC$maxNumberPerItem >= listFromASC$numberOfDifferentItems,
-  #   listFromASC$maxNumberPerItem,
-  #   listFromASC$numberOfDifferentItems
-  # )
   ### enumerate all combinations
   everyCombination <- as.matrix(partitions::restrictedparts(
     listFromASC$itemsInTotal,
-    # numberOfSummands
     listFromASC$maxNumberPerItem
   ))
 
@@ -88,13 +82,25 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
   filterMoreCombinations <- which(
     everyCombination[1 + ls$minNumberPerItem,] < ls$numberOfDifferentItems
   )
+
   # only the intersection of those filters is interesting
-  intersection <- dplyr::intersect(
-    filterDifferentItems, filterPossibleCombinations
+  intersection <- Reduce(
+    intersect,
+    list(
+      filterDifferentItems, filterPossibleCombinations, filterMoreCombinations
+    )
   )
-  intersection <- dplyr::intersect(
-    intersection, filterMoreCombinations
-  )
+
+  ### use checksum to avoid bug which often occurs with 5 summands
+  if (listFromASC$maxNumberPerItem == 5 &&
+      listFromASC$numberOfDifferentItems > 2) {
+    checksumOfItemNumbers <- sum(listFromASC$numbersOfEveryItem)
+    # summarise the first three summands of every combination
+    checksumsOfCombinations <- colSums(everyCombination[1:3,])
+    filterChecksum <- which(checksumsOfCombinations <= checksumOfItemNumbers-3)
+
+    intersection <- intersect(intersection, filterChecksum)
+  }
   alternatives <- everyCombination[
     , # take every row = every summand, but ...
     intersection # only these columns
