@@ -26,25 +26,40 @@ sense for the practical utilization.
 \details{
 If \code{intermediateSteps} is set to \code{TRUE}, the output of this
 function will change to a list of length 2. The first element will be the
-same matrix as it is produced normally. The second element is a list
-containing the intermediate steps which are done inside of this function.
+same matrix as it is produced with \code{intermediateSteps == FALSE}. The
+second element is a list containing the intermediate steps which are done
+within this function. These steps include:
+1. Enumerate every possible partition using
+   \code{partitions::restrictedparts()}.
+2. filter1: Since we have only up to five different items in the shopping
+   cart and discount is given for the items' dissimilarity, the greatest
+   'discount set' can only be the number of different items in the shopping
+   cart.
+3. filter2: Accordingly the smallest summand need to be greater or equal to
+   the 'number of maxima' in our shopping cart. This filter minimizes the
+   combinations of partitions which can't lead to a discount set later on.
+Because there are still some combinations of partitions that can't be a
+discount set, another function is necessary to point only the possible
+discount sets out.
 }
 \examples{
+```
 ### setup
 books <- dplyr::tibble(
-itemID = 1:5,
-name = c(
-"Stein der Weisen",
-"Kammer des Schreckens",
-"Gefangene von Askaban",
-"Feuerkelch",
-"Orden des Phönix"
+  itemID = 1:5,
+  name = c(
+    "Stein der Weisen",
+    "Kammer des Schreckens",
+    "Gefangene von Askaban",
+    "Feuerkelch",
+    "Orden des Phönix"
+  )
 )
-)
-set.seed(1)
+set.seed(1) # for reproducibility
 shoppingCart <- dplyr::sample_n(books, 8, replace = TRUE)
 shoppingCart <- dplyr::arrange(shoppingCart, itemID)
 ls <- analyseShoppingCart(shoppingCart, itemID, name)
 ### end of setup
 enumerateCombinations(ls)
+```
 }

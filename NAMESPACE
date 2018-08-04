@@ -2,5 +2,6 @@
 
 export(analyseShoppingCart)
 export(enumerateCombinations)
+export(extractDiscountSets)
 importFrom(magrittr,'%>%')
 importFrom(rlang,':=')

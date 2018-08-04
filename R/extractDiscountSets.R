@@ -33,6 +33,30 @@
 
 extractDiscountSets <- function(alternatives, intermediateSteps = FALSE) {
 
+  checkCorrectness <- alternatives
 
+  for (i in seq_len(ncol(checkCorrectness)) ) {
+    # for debugging
+    # if (i >= 2) break
+
+    # 'n' are the numbers we substract from each column, but only 'n' rows
+    n <- checkCorrectness[, i]
+    for (j in seq_len(nrow(checkCorrectness)) ) {
+      # print(n[j])
+      # print(checkCorrectness[, i])
+      checkCorrectness[1:n[j], i] <- checkCorrectness[1:n[j], i] - 1
+      # print(checkCorrectness[, i])
+      if (-1 %in% checkCorrectness[, i]) break
+
+      # sorting is important. Otherwise substraction doesn't work correctly
+      checkCorrectness[, i] <- sort(checkCorrectness[, i], decreasing = T)
+      # print(checkCorrectness[, i])
+    }
+  }
+
+  return(checkCorrectness)
+  filterCorrectCombinations <- which(
+    checkCorrectness[,]
+  )
 
 }
