@@ -59,24 +59,21 @@ test_that(
     # test output of the intermediate steps
     iS <- tmpResultT$intermediateSteps
     stepNames <- c("everyCombination",
-                   "filterForDifferentItems",
-                   "filterForPossibleCombinations",
-                   "filterMoreCombinations",
+                   "biggestSummandEqualsDifferentItems",
+                   "smallestSummandEqualsNumberMaxima",
                    "intersection")
     expect_equal(stepNames, names(iS))
     # at first data type testing again
     expect_is(iS$everyCombination, "matrix")
-    expect_is(iS$filterForDifferentItems, "integer")
-    expect_is(iS$filterForPossibleCombinations, "integer")
-    expect_is(iS$filterMoreCombinations, "integer")
+    expect_is(iS$biggestSummandEqualsDifferentItems, "integer")
+    expect_is(iS$smallestSummandEqualsNumberMaxima, "integer")
     expect_is(iS$intersection, "integer")
     # intersection should be lower or equal to the bigger of those filters
     expect_lte(
       length(iS$intersection),
       max(
-        c(length(iS$filterForDifferentItems),
-          length(iS$filterForPossibleCombinations),
-          length(iS$filterMoreCombinations))
+        c(length(iS$biggestSummandEqualsDifferentItems),
+          length(iS$smallestSummandEqualsNumberMaxima))
       )
     )
   }
@@ -112,9 +109,9 @@ test_that(
     iS <- tmpResultT$intermediateSteps
     expect_equal(ncol(iS$everyCombination), 10) # 10 columns
     expect_equal(nrow(iS$everyCombination), 3) # 3 rows
-    expect_equal(iS$filterForDifferentItems, c(5,8,9,10)) # possible columns
-    expect_equal(iS$filterForPossibleCombinations, c(9, 10)) # possible columns
-    # expect_equal(iS$filterMoreCombinations, c())
+    # possible columns
+    expect_equal(iS$biggestSummandEqualsDifferentItems, c(5,8,9,10))
+    expect_equal(iS$smallestSummandEqualsNumberMaxima, c(9, 10))
     expect_equal(iS$intersection, c(9, 10))
   }
 )
@@ -146,8 +143,9 @@ test_that(
     iS <- tmpResultT$intermediateSteps
     expect_equal(ncol(iS$everyCombination), 10) # 10 columns
     expect_equal(nrow(iS$everyCombination), 5) # 5 rows
-    expect_equal(iS$filterForDifferentItems, c(7,9,10)) # possible columns
-    expect_equal(iS$filterForPossibleCombinations, 10) # possible columns
+    # possible columns
+    expect_equal(iS$biggestSummandEqualsDifferentItems, c(7,9,10))
+    expect_equal(iS$smallestSummandEqualsNumberMaxima, 10)
     expect_equal(iS$intersection, 10)
   }
 )
@@ -175,21 +173,19 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    # expect_equal(ncol(tmpResult), 2) # 1 column in this example
+    expect_equal(ncol(tmpResult), 3) # 3 possibilites in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[,1], c(3,2,2,2,1)) # first column
-    expect_equal(tmpResult[,2], c(2,2,2,2,2)) # second column
+    expect_equal(tmpResult[, 1], c(3,3,2,1,1)) # first possibilty
+    expect_equal(tmpResult[, 2], c(3,2,2,2,1)) # second possibilty
+    expect_equal(tmpResult[, 3], c(2,2,2,2,2)) # third possibilty
 
     # test intermediate steps
     iS <- tmpResultT$intermediateSteps
     expect_equal(ncol(iS$everyCombination), 30) # 30 columns
     expect_equal(nrow(iS$everyCombination), 5) # 5 rows
-    expect_equal(iS$filterForDifferentItems, c(21, 23, 28, 29, 30))
-    expect_equal(iS$filterForPossibleCombinations, c(24:30))
-    expect_equal(
-      iS$filterMoreCombinations, c(1,2,3,7,8,11,15,16,19,22,24,25,27,29,30)
-    )
-    expect_equal(iS$intersection, c(29, 30))
+    expect_equal(iS$biggestSummandEqualsDifferentItems, c(21, 23, 28, 29, 30))
+    expect_equal(iS$smallestSummandEqualsNumberMaxima, c(24:30))
+    expect_equal(iS$intersection, c(28, 29, 30))
   }
 )
 
@@ -217,22 +213,14 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 3) # 3 column in this example
+    expect_equal(ncol(tmpResult), 6) # 6 possibilties in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(4,2,2,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(3,3,2,2,1)) # second column
-    expect_equal(tmpResult[, 3], c(3,2,2,2,2)) # third column
-
-    # test intermediate steps
-    # iS <- tmpResultT$intermediateSteps
-    # expect_equal(ncol(iS$everyCombination), 30) # 30 columns
-    # expect_equal(nrow(iS$everyCombination), 5) # 5 rows
-    # expect_equal(iS$filterForDifferentItems, c(21, 23, 28, 29, 30))
-    # expect_equal(iS$filterForPossibleCombinations, c(24:30))
-    # expect_equal(
-    #   iS$filterMoreCombinations, c(1,2,3,7,8,11,15,16,19,22,24,25,27,29,30)
-    # )
-    # expect_equal(iS$intersection, c(29, 30))
+    expect_equal(tmpResult[, 1], c(4,4,1,1,1)) # 1st possibilty
+    expect_equal(tmpResult[, 2], c(4,3,2,1,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 3], c(3,3,3,1,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 4], c(4,2,2,2,1)) # 4th possibilty
+    expect_equal(tmpResult[, 5], c(3,3,2,2,1)) # 5th possibilty
+    expect_equal(tmpResult[, 6], c(3,2,2,2,2)) # 6th possibilty
   }
 )
 
@@ -261,13 +249,13 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 5) # 5 columns in this example
+    expect_equal(ncol(tmpResult), 9) # 9 possibilties in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(5,2,2,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(4,3,2,2,1)) # second column
-    expect_equal(tmpResult[, 3], c(3,3,3,2,1)) # third column
-    expect_equal(tmpResult[, 4], c(4,2,2,2,2)) # forth column
-    expect_equal(tmpResult[, 5], c(3,3,2,2,2)) # fifth column
+    expect_equal(tmpResult[, 5], c(5,2,2,2,1)) # 1st possibilty
+    expect_equal(tmpResult[, 6], c(4,3,2,2,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 7], c(3,3,3,2,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 8], c(4,2,2,2,2)) # 4th possibilty
+    expect_equal(tmpResult[, 9], c(3,3,2,2,2)) # 5th possibilty
   }
 )
 
@@ -295,10 +283,10 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 2) # 2 columns in this example
+    expect_equal(ncol(tmpResult), 3) # 3 possibilities in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(3,3,2,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(3,2,2,2,2)) # second column
+    expect_equal(tmpResult[, 2], c(3,3,2,2,1)) # 1st possibilty
+    expect_equal(tmpResult[, 3], c(3,2,2,2,2)) # 2nd possibilty
   }
 )
 
@@ -328,13 +316,13 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 5) # 5 columns in this example
+    expect_equal(ncol(tmpResult), 6) # 6 possibilities in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(4,4,2,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(4,3,3,2,1)) # second column
-    expect_equal(tmpResult[, 3], c(3,3,3,3,1)) # third column
-    expect_equal(tmpResult[, 4], c(4,3,2,2,2)) # fourth column
-    expect_equal(tmpResult[, 5], c(3,3,3,2,2)) # fifth column
+    expect_equal(tmpResult[, 2], c(4,4,2,2,1)) # 1st possibilty
+    expect_equal(tmpResult[, 3], c(4,3,3,2,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 4], c(3,3,3,3,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 5], c(4,3,2,2,2)) # 4th possibilty
+    expect_equal(tmpResult[, 6], c(3,3,3,2,2)) # 5th possibilty
   }
 )
 
@@ -366,18 +354,18 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 10) # 10 columns in this example
+    expect_equal(ncol(tmpResult), 12) # 12 possibilties in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(5,5,2,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(5,4,3,2,1)) # second column
-    expect_equal(tmpResult[, 3], c(4,4,4,2,1)) # third column
-    expect_equal(tmpResult[, 4], c(5,3,3,3,1)) # 4th column
-    expect_equal(tmpResult[, 5], c(4,4,3,3,1)) # 5th column
-    expect_equal(tmpResult[, 6], c(5,4,2,2,2)) # 6th column
-    expect_equal(tmpResult[, 7], c(5,3,3,2,2)) # 7th column
-    expect_equal(tmpResult[, 8], c(4,4,3,2,2)) # 8th column
-    expect_equal(tmpResult[, 9], c(4,3,3,3,2)) # 9th column
-    expect_equal(tmpResult[, 10], c(3,3,3,3,3)) # 10th column
+    expect_equal(tmpResult[, 3], c(5,5,2,2,1)) # 1st possibilty
+    expect_equal(tmpResult[, 4], c(5,4,3,2,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 5], c(4,4,4,2,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 6], c(5,3,3,3,1)) # 4th possibilty
+    expect_equal(tmpResult[, 7], c(4,4,3,3,1)) # 5th possibilty
+    expect_equal(tmpResult[, 8], c(5,4,2,2,2)) # 6th possibilty
+    expect_equal(tmpResult[, 9], c(5,3,3,2,2)) # 7th possibilty
+    expect_equal(tmpResult[, 10], c(4,4,3,2,2)) # 8th possibilty
+    expect_equal(tmpResult[, 11], c(4,3,3,3,2)) # 9th possibilty
+    expect_equal(tmpResult[, 12], c(3,3,3,3,3)) # 10th possibilty
   }
 )
 
@@ -412,17 +400,17 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 9) # 9 columns in this example
+    expect_equal(ncol(tmpResult), 9) # 9 possibility in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(5,5,5,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(5,5,4,3,1)) # second column
-    expect_equal(tmpResult[, 3], c(5,4,4,4,1)) # third column
-    expect_equal(tmpResult[, 4], c(5,5,4,2,2)) # 4th column
-    expect_equal(tmpResult[, 5], c(5,5,3,3,2)) # 5th column
-    expect_equal(tmpResult[, 6], c(5,4,4,3,2)) # 6th column
-    expect_equal(tmpResult[, 7], c(4,4,4,4,2)) # 7th column
-    expect_equal(tmpResult[, 8], c(5,4,3,3,3)) # 8th column
-    expect_equal(tmpResult[, 9], c(4,4,4,3,3)) # 9th column
+    expect_equal(tmpResult[, 1], c(5,5,5,2,1)) # 1st possibilty
+    expect_equal(tmpResult[, 2], c(5,5,4,3,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 3], c(5,4,4,4,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 4], c(5,5,4,2,2)) # 4th possibilty
+    expect_equal(tmpResult[, 5], c(5,5,3,3,2)) # 5th possibilty
+    expect_equal(tmpResult[, 6], c(5,4,4,3,2)) # 6th possibilty
+    expect_equal(tmpResult[, 7], c(4,4,4,4,2)) # 7th possibilty
+    expect_equal(tmpResult[, 8], c(5,4,3,3,3)) # 8th possibilty
+    expect_equal(tmpResult[, 9], c(4,4,4,3,3)) # 9th possibilty
   }
 )
 
@@ -455,17 +443,17 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 9) # 9 columns in this example
+    expect_equal(ncol(tmpResult), 12) # 12 possibilities in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(5,4,3,2,1)) # first column
-    expect_equal(tmpResult[, 2], c(4,4,4,2,1)) # second column
-    expect_equal(tmpResult[, 3], c(5,3,3,3,1)) # third column
-    expect_equal(tmpResult[, 4], c(4,4,3,3,1)) # 4th column
-    expect_equal(tmpResult[, 5], c(5,4,2,2,2)) # 5th column
-    expect_equal(tmpResult[, 6], c(5,3,3,2,2)) # 6th column
-    expect_equal(tmpResult[, 7], c(4,4,3,2,2)) # 7th column
-    expect_equal(tmpResult[, 8], c(4,3,3,3,2)) # 8th column
-    expect_equal(tmpResult[, 9], c(3,3,3,3,3)) # 9th column
+    expect_equal(tmpResult[, 4], c(5,4,3,2,1)) # 1st possibilty
+    expect_equal(tmpResult[, 5], c(4,4,4,2,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 6], c(5,3,3,3,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 7], c(4,4,3,3,1)) # 4th possibilty
+    expect_equal(tmpResult[, 8], c(5,4,2,2,2)) # 5th possibilty
+    expect_equal(tmpResult[, 9], c(5,3,3,2,2)) # 6th possibilty
+    expect_equal(tmpResult[, 10], c(4,4,3,2,2)) # 7th possibilty
+    expect_equal(tmpResult[, 11], c(4,3,3,3,2)) # 8th possibilty
+    expect_equal(tmpResult[, 12], c(3,3,3,3,3)) # 9th possibilty
   }
 )
 
@@ -522,11 +510,11 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 3) # 3 columns in this example
+    expect_equal(ncol(tmpResult), 4) # 4 possibilities in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(4,3,3,1)) # first column
-    expect_equal(tmpResult[, 2], c(4,3,2,2)) # second column
-    expect_equal(tmpResult[, 3], c(3,3,3,2)) # third column
+    expect_equal(tmpResult[, 2], c(4,3,3,1)) # 1st possibilty
+    expect_equal(tmpResult[, 3], c(4,3,2,2)) # 2nd possibilty
+    expect_equal(tmpResult[, 4], c(3,3,3,2)) # 3rd possibilty
   }
 )
 
@@ -587,10 +575,10 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 2) # 2 columns in this example
+    expect_equal(ncol(tmpResult), 5) # 5 possibility in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(5,4,3,2)) # first column
-    expect_equal(tmpResult[, 2], c(4,4,4,2)) # second column
+    expect_equal(tmpResult[, 2], c(5,4,3,2)) # 1st possibilty
+    expect_equal(tmpResult[, 3], c(4,4,4,2)) # 2nd possibilty
   }
 )
 
@@ -615,10 +603,10 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 2) # 2 columns in this example
+    expect_equal(ncol(tmpResult), 2) # 2 possibilities in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(5,3)) # first column
-    expect_equal(tmpResult[, 2], c(4,4)) # second column
+    expect_equal(tmpResult[, 1], c(5,3)) # 1st possibilty
+    expect_equal(tmpResult[, 2], c(4,4)) # 2nd possibilty
   }
 )
 
@@ -646,12 +634,12 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
-    expect_equal(ncol(tmpResult), 5) # 5 columns in this example
+    expect_equal(ncol(tmpResult), 6) # 6 possibilities in this example
     # output numbers shall be as follows
-    expect_equal(tmpResult[, 1], c(4,3,2,1,1)) # first column
-    expect_equal(tmpResult[, 2], c(3,3,3,1,1)) # second column
-    expect_equal(tmpResult[, 3], c(4,2,2,2,1)) # third column
-    expect_equal(tmpResult[, 3], c(3,3,2,2,1)) # fourth column
-    expect_equal(tmpResult[, 3], c(3,2,2,2,2)) # fifth column
+    expect_equal(tmpResult[, 2], c(4,3,2,1,1)) # 1st possibilty
+    expect_equal(tmpResult[, 3], c(3,3,3,1,1)) # 2nd possibilty
+    expect_equal(tmpResult[, 4], c(4,2,2,2,1)) # 3rd possibilty
+    expect_equal(tmpResult[, 5], c(3,3,2,2,1)) # 4th possibilty
+    expect_equal(tmpResult[, 6], c(3,2,2,2,2)) # 5th possibilty
   }
 )

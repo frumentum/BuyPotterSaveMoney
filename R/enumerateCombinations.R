@@ -17,8 +17,14 @@
 #'    \code{partitions::restrictedparts()}.
 #' 2. filter1: Since we have only up to five different items in the shopping
 #'    cart and discount is given for the items' dissimilarity, the greatest
-#'    'discount set' can be the number of different items in the shopping cart.
-#' 3. filter2:
+#'    'discount set' can only be the number of different items in the shopping
+#'    cart.
+#' 3. filter2: Accordingly the smallest summand need to be greater or equal to
+#'    the 'number of maxima' in our shopping cart. This filter minimizes the
+#'    combinations of partitions which can't lead to a discount set later on.
+#' Because there are still some combinations of partitions that can't be a
+#' discount set, another function is necessary to point only the possible
+#' discount sets out.
 #' @return
 #' Depending on \code{intermediateSteps} a matrix or a list is returned. Matrix
 #' represents the combinations which shall be used for calculating the discount.
@@ -66,54 +72,30 @@ enumerateCombinations <- function(listFromASC, intermediateSteps = FALSE) {
   # No bigger set of combinations is possible than we have different items in
   # the shopping cart. That means that the first summand need to be lower or
   # equal to the number of different items.
-  filterDifferentItems <- which(
+  biggestSummandEqualsDifferentItems <- which(
     everyCombination[1,] <= listFromASC$numberOfDifferentItems
   )
+
   # Filter impossible combinations, eg the combination 3* 1st book, 3*2nd
   # book, 3*3rd book and 1*4th book: 4 discount + 2*3 discount, but not possible
-  # is 2*4 discount + 1*2 discount
+  # is 2*4 discount + 1*2 discount; in other words, the smallest summand need
+  # to be greater or equal to the number of maxima we have in our shopping cart.
   ls <- listFromASC # to make name shorter
-  filterPossibleCombinations <- which(
+  smallestSummandEqualsNumberMaxima <- which(
     everyCombination[ls$maxNumberPerItem,] >= ls$numberOfMaxima
   )
-  # 'Discount sets' of size 'number of different items' can only occur as often
-  # as the number of minima. Eg the combination 5,4,1 may result in the sums
-  # 3,2,2,2,1 and 2,2,2,2,2 but not in 3,3,2,1,1
-  filterMoreCombinations <- which(
-    everyCombination[1 + ls$minNumberPerItem,] < ls$numberOfDifferentItems
+  # for us the intersection of those filters is interesting
+  intersection <- intersect(
+    biggestSummandEqualsDifferentItems,
+    smallestSummandEqualsNumberMaxima
   )
-
-  # only the intersection of those filters is interesting
-  intersection <- Reduce(
-    intersect,
-    list(
-      filterDifferentItems, filterPossibleCombinations, filterMoreCombinations
-    )
-  )
-
-  ### use checksum to avoid bug which often occurs with 5 summands
-  if (listFromASC$maxNumberPerItem == 5 &&
-      listFromASC$numberOfDifferentItems > 2) {
-    checksumOfItemNumbers <- sum(listFromASC$numbersOfEveryItem)
-    # summarise the first three summands of every combination
-    checksumsOfCombinations <- colSums(everyCombination[1:3,])
-    filterChecksum <- which(checksumsOfCombinations <= checksumOfItemNumbers-3)
-
-    intersection <- intersect(intersection, filterChecksum)
-  }
-  alternatives <- everyCombination[
-    , # take every row = every summand, but ...
-    intersection # only these columns
-  ]
-  # bug fix: output shall always be a matrix
-  if (length(intersection) == 1) alternatives <- as.matrix(alternatives)
+  alternatives <- as.matrix(everyCombination[, intersection])
 
   if (isTRUE(intermediateSteps)) {
     intermediateSteps <- list(
       everyCombination = everyCombination,
-      filterForDifferentItems = filterDifferentItems,
-      filterForPossibleCombinations = filterPossibleCombinations,
-      filterMoreCombinations = filterMoreCombinations,
+      biggestSummandEqualsDifferentItems = biggestSummandEqualsDifferentItems,
+      smallestSummandEqualsNumberMaxima = smallestSummandEqualsNumberMaxima,
       intersection = intersection
     )
 
