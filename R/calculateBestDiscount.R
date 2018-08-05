@@ -69,8 +69,7 @@ calculateBestDiscount <- function(
   # and calculate the price per set
   discountSetTibble <- discountSets %>%
     as.data.frame() %>%
-    tidyr::gather(key = "combination", value = "set") #%>%
-  return(discountSetTibble)
+    tidyr::gather(key = "combination", value = "set") %>%
     dplyr::left_join(discountInfos, by = "set") %>%
     dplyr::mutate(price = set*pricePerItem*(1 - discount/100) )
 

@@ -70,15 +70,14 @@ extractDiscountSets <- function(
     dplyr::filter(value < 0) %>%
     dplyr::distinct(combination) %>%
     dplyr::pull(combination)
-  # if (length(incorrectDiscount) == 0) incorrectDiscount <- "OK"
 
   correctDiscountSets <- which(! colnames(alternatives) %in% incorrectDiscount)
   correctDiscountSets <- alternatives[, correctDiscountSets]
 
   if (isTRUE(intermediateSteps)) {
     intermediateSteps <- list(
-      "checkCorrectness" = checkCorrectness,
-      "incorrectDiscountSets" = incorrectDiscountSets
+      "checkCorrectness" = nMat,
+      "incorrectDiscountSets" = incorrectDiscount
     )
     return(list(
       "correctDiscountSets" = correctDiscountSets,

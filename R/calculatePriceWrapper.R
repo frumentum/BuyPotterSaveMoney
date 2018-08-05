@@ -77,26 +77,24 @@ calculatePrice <- function(
     # analyse shopping cart
     ls <- analyseShoppingCart(shoppingCart)
     # enumerate every possible combination (and filter some useless ones)
-    alternatives <- enumerateCombinations(ls, intermediateSteps = TRUE)
-    intermediateSteps <- alternatives$intermediateSteps
-    alternatives <- alternatives$alternatives
+    step2 <- enumerateCombinations(ls, intermediateSteps = TRUE)
+    intermediateSteps <- step2$intermediateSteps
+    alternatives <- step2$alternatives
     # filter only the meaningful combinations using two for loops
-    discountSets <- extractDiscountSets(
+    step3 <- extractDiscountSets(
       alternatives, ls$numbersOfEveryItem, intermediateSteps = TRUE
     )
-    intermediateSteps <- c(intermediateSteps, discountSets$intermediateSteps)
-    discountSets <- discountSets$correctDiscountSets
+    intermediateSteps <- c(intermediateSteps, step3$intermediateSteps)
+    discountSets <- step3$correctDiscountSets
     # calculate the best discount
-    bestDiscount <- calculateBestDiscount(
+    step4 <- calculateBestDiscount(
       discountSets, discountInfos, pricePerItem, intermediateSteps = TRUE
     )
 
-    intermediateSteps <- c(intermediateSteps, bestDiscount$intermediateSteps)
-    # intermediateSteps <- c(list("bestDiscount" = bestDiscount$bestDiscount),
-    #                        intermediateSteps)
+    intermediateSteps <- c(intermediateSteps, step4$intermediateSteps)
 
     return(list(
-      "bestDiscount" = bestDiscount$bestDiscount,
+      "bestDiscount" = step4$bestDiscount,
       "intermediateSteps" = intermediateSteps
     ))
   }

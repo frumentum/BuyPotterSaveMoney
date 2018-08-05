@@ -1,7 +1,7 @@
 Package: BuyPotterSaveMoney
 Type: Package
 Title: Calculates the best discount within a shopping cart
-Version: 0.1.0
+Version: 0.2.0
 Author: Simon Pöschl
 Maintainer: Simon Pöschl <frumentum@posteo.de>
 Description: As an example the first five books about Harry Potter are used for
