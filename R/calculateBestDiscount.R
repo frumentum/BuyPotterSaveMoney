@@ -6,14 +6,14 @@
 #' and the discount prices.
 #' @param discountSets \code{matrix} as it comes from
 #' \code{extractDiscountSets()}
-#' @param discountTibble \code{tibble} or \code{data.frame} which contains
+#' @param discountInfos \code{tibble} or \code{data.frame} which contains
 #' information about the sets and their discount; read details
 #' @param pricePerItem numerical price for one item; Currently only one price is
 #' allowed
 #' @param intermediateSteps logical; if it's set to \code{TRUE}, intermediate
 #' steps are shown; default is \code{FALSE}
 #' @details
-#' Currently the argument \code{discountTibble} needs one special format: It
+#' Currently the argument \code{discountInfos} needs one special format: It
 #' needs two columns:
 #' 1. The first one is called \code{set} and contains numerical information
 #'    about the discount sets' possibilities (read \code{examples})
@@ -55,7 +55,7 @@
 #' @export
 
 calculateBestDiscount <- function(
-  discountSets, discountTibble, pricePerItem, intermediateSteps = FALSE
+  discountSets, discountInfos, pricePerItem, intermediateSteps = FALSE
 ) {
 
   # some security checks at the beginning
