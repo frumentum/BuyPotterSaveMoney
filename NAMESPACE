@@ -2,6 +2,7 @@
 
 export(analyseShoppingCart)
 export(calculateBestDiscount)
+export(calculatePrice)
 export(enumerateCombinations)
 export(extractDiscountSets)
 importFrom(magrittr,'%>%')

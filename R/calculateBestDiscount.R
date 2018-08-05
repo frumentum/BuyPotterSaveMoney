@@ -43,12 +43,12 @@
 #' alternatives <- enumerateCombinations(ls)
 #' discountSets <- extractDiscountSets(alternatives)
 #'
-#' discountTibble <- dplyr::tibble(
+#' discountInfos <- dplyr::tibble(
 #'   set = 1:5,
 #'   discount = c(0, 5, 10, 20, 25)
 #' )
 #' calculateBestDiscount(
-#'    correctDiscountSets, discountTibble, pricePerItem = 8
+#'    correctDiscountSets, discountInfos, pricePerItem = 8
 #' )
 #' ```
 #' @importFrom magrittr '%>%'
@@ -60,9 +60,9 @@ calculateBestDiscount <- function(
 
   # some security checks at the beginning
   stopifnot(is.matrix(discountSets))
-  stopifnot(is.data.frame(discountTibble))
+  stopifnot(is.data.frame(discountInfos))
   stopifnot(is.numeric(pricePerItem))
-  stopifnot(ncol(discountTibble) == 2)
+  stopifnot(ncol(discountInfos) == 2)
   stopifnot(length(pricePerItem) == 1)
 
   # join the different discount sets with the information about the discount
@@ -70,7 +70,7 @@ calculateBestDiscount <- function(
   discountSetTibble <- discountSets %>%
     as.data.frame() %>%
     tidyr::gather(key = "combination", value = "set") %>%
-    dplyr::left_join(discountTibble, by = "set") %>%
+    dplyr::left_join(discountInfos, by = "set") %>%
     dplyr::mutate(price = set*pricePerItem*(1 - discount/100) )
 
   # build the sum over every possible discount combination and choose the

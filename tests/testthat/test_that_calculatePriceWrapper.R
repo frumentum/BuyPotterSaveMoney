@@ -16,15 +16,15 @@ set.seed(1)
 shoppingCart <- dplyr::sample_n(books, 15, replace = TRUE) %>%
   dplyr::arrange(itemID)
 
-discountTibble <- dplyr::tibble(
-  set = 1:5,
-  discount = c(0, 5, 10, 20, 25)
-)
-
 
 test_that(
   "one function returns best price with information about discount",
   {
+    discountTibble <- dplyr::tibble(
+      set = 1:5,
+      discount = c(0, 5, 10, 20, 25)
+    )
+
     priceInfo <- calculatePrice(
       shoppingCart, discountTibble, pricePerItem = 8
     )
@@ -40,6 +40,8 @@ test_that(
     expect_equal(priceInfo, priceInfoDetailed$bestDiscount)
     iS <- priceInfoDetailed$intermediateSteps
     expect_is(iS, "list")
+
+    expect_length(iS, 9)
 
   }
 )

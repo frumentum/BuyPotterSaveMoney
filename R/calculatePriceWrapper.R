@@ -59,6 +59,44 @@ calculatePrice <- function(
   shoppingCart, discountInfos, pricePerItem, intermediateSteps = FALSE
 ) {
 
+  if (! isTRUE(intermediateSteps) ) {
+    # analyse shopping cart
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate every possible combination (and filter some useless ones)
+    alternatives <- enumerateCombinations(ls)
+    # filter only the meaningful combinations using two for loops
+    discountSets <- extractDiscountSets(alternatives)
+    # calculate the best discount
+    bestDiscount <- calculateBestDiscount(
+      discountSets, discountInfos, pricePerItem
+    )
+    return(bestDiscount)
+  }
 
+  if (isTRUE(intermediateSteps) ) {
+    # analyse shopping cart
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    # enumerate every possible combination (and filter some useless ones)
+    alternatives <- enumerateCombinations(ls, intermediateSteps = TRUE)
+    intermediateSteps <- alternatives$intermediateSteps
+    alternatives <- alternatives$alternatives
+    # filter only the meaningful combinations using two for loops
+    discountSets <- extractDiscountSets(alternatives, intermediateSteps = TRUE)
+    intermediateSteps <- c(intermediateSteps, discountSets$intermediateSteps)
+    discountSets <- discountSets$correctDiscountSets
+    # calculate the best discount
+    bestDiscount <- calculateBestDiscount(
+      discountSets, discountInfos, pricePerItem, intermediateSteps = TRUE
+    )
+
+    intermediateSteps <- c(intermediateSteps, bestDiscount$intermediateSteps)
+    # intermediateSteps <- c(list("bestDiscount" = bestDiscount$bestDiscount),
+    #                        intermediateSteps)
+
+    return(list(
+      "bestDiscount" = bestDiscount$bestDiscount,
+      "intermediateSteps" = intermediateSteps
+    ))
+  }
 
 }

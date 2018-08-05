@@ -4,14 +4,14 @@
 \alias{calculateBestDiscount}
 \title{calculate the best discount}
 \usage{
-calculateBestDiscount(discountSets, discountTibble, pricePerItem,
+calculateBestDiscount(discountSets, discountInfos, pricePerItem,
   intermediateSteps = FALSE)
 }
 \arguments{
 \item{discountSets}{\code{matrix} as it comes from
 \code{extractDiscountSets()}}
 
-\item{discountTibble}{\code{tibble} or \code{data.frame} which contains
+\item{discountInfos}{\code{tibble} or \code{data.frame} which contains
 information about the sets and their discount; read details}
 
 \item{pricePerItem}{numerical price for one item; Currently only one price is
@@ -32,7 +32,7 @@ function. Additionally information are required about the price of one item
 and the discount prices.
 }
 \details{
-Currently the argument \code{discountTibble} needs one special format: It
+Currently the argument \code{discountInfos} needs one special format: It
 needs two columns:
 1. The first one is called \code{set} and contains numerical information
    about the discount sets' possibilities (read \code{examples})
@@ -61,12 +61,12 @@ ls <- analyseShoppingCart(shoppingCart, itemID, name)
 alternatives <- enumerateCombinations(ls)
 discountSets <- extractDiscountSets(alternatives)
 
-discountTibble <- dplyr::tibble(
+discountInfos <- dplyr::tibble(
   set = 1:5,
-  discount = c(0, 0.05, 0.1, 0.2, 0.25)
+  discount = c(0, 5, 10, 20, 25)
 )
 calculateBestDiscount(
-   correctDiscountSets, discountTibble, pricePerItem = 8
+   correctDiscountSets, discountInfos, pricePerItem = 8
 )
 ```
 }
