@@ -104,6 +104,18 @@ calculateBestDiscount <- function(
     ) %>%
     unlist()
 
-  return(necessaryInformation)
+  if (isTRUE(intermediateSteps)) {
+    ls <- list(
+      "discountSetTibble" = discountSetTibble,
+      "bestDiscountSet" = bestDiscountSet,
+      "bestDiscountSetDetailed" = bestDiscountSetDetailed
+    )
+    return(
+      list(
+        "bestDiscount" = necessaryInformation,
+        "intermediateSteps" = ls
+      )
+    )
+  } else return(necessaryInformation)
 
 }

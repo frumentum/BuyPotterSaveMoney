@@ -50,5 +50,13 @@ test_that(
     expect_equal(bestDiscountSteps$bestDiscount, bestDiscount)
     iS <- bestDiscountSteps$intermediateSteps
     expect_is(iS, "list")
+    expect_length(iS, 3)
+    namesOfIntermediateStepsContent <- c(
+      "discountSetTibble", "bestDiscountSet", "bestDiscountSetDetailed"
+    )
+    expect_equal(names(iS), namesOfIntermediateStepsContent)
+    expect_is(iS$discountSetTibble, "data.frame")
+    expect_is(iS$bestDiscountSet, "data.frame")
+    expect_is(iS$bestDiscountSetDetailed, "data.frame")
   }
 )
