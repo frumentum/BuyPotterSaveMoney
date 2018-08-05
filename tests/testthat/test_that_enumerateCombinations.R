@@ -1,4 +1,5 @@
 context("test_that_enumerateCombinations")
+library(magrittr)
 
 # These books are available in the shop
 books <- dplyr::tibble(
@@ -41,6 +42,18 @@ test_that(
     expect_equal(tmpResult, tmpResultT$alternatives)
     # only our list type is accepted
     expect_error(enumerateCombinations(list(a = 1)) )
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
 
     ### interesting expecations
     # To understand the following procedure: Most of the possible discount
@@ -99,6 +112,18 @@ test_that(
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
     ### start testing
     expect_equal(ncol(tmpResult), 2) # 2 columns in this example
     # output numbers shall be as follows
@@ -133,6 +158,18 @@ test_that(
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
 
     ### start testing
     expect_equal(ncol(tmpResult), 1) # 1 column in this example
@@ -173,6 +210,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 3) # 3 possibilites in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(3,3,2,1,1)) # first possibilty
@@ -213,6 +264,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 6) # 6 possibilties in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(4,4,1,1,1)) # 1st possibilty
@@ -249,6 +314,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 9) # 9 possibilties in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 5], c(5,2,2,2,1)) # 1st possibilty
@@ -283,6 +362,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 3) # 3 possibilities in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 2], c(3,3,2,2,1)) # 1st possibilty
@@ -316,6 +409,19 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 6) # 6 possibilities in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 2], c(4,4,2,2,1)) # 1st possibilty
@@ -354,6 +460,19 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 12) # 12 possibilties in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 3], c(5,5,2,2,1)) # 1st possibilty
@@ -400,6 +519,19 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 9) # 9 possibility in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(5,5,5,2,1)) # 1st possibilty
@@ -443,6 +575,19 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 12) # 12 possibilities in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 4], c(5,4,3,2,1)) # 1st possibilty
@@ -480,6 +625,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
+
     expect_equal(ncol(tmpResult), 1) # only 1 column in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(4,3,3))
@@ -510,6 +669,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 4) # 4 possibilities in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 2], c(4,3,3,1)) # 1st possibilty
@@ -541,6 +714,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 2) # 3 columns in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(4,2,2,2)) # first column
@@ -575,6 +762,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 5) # 5 possibility in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 2], c(5,4,3,2)) # 1st possibilty
@@ -603,6 +804,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 2) # 2 possibilities in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 1], c(5,3)) # 1st possibilty
@@ -634,6 +849,20 @@ test_that(
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
 
     ### start testing
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
     expect_equal(ncol(tmpResult), 6) # 6 possibilities in this example
     # output numbers shall be as follows
     expect_equal(tmpResult[, 2], c(4,3,2,1,1)) # 1st possibilty
@@ -641,5 +870,32 @@ test_that(
     expect_equal(tmpResult[, 4], c(4,2,2,2,1)) # 3rd possibilty
     expect_equal(tmpResult[, 5], c(3,3,2,2,1)) # 4th possibilty
     expect_equal(tmpResult[, 6], c(3,2,2,2,2)) # 5th possibilty
+  }
+)
+
+test_that(
+  "one last example for a shopping cart consisting of 80 items",
+  {
+    set.seed(1) # for reproducibility
+    shoppingCart <- dplyr::sample_n(books, 80, replace = TRUE) %>%
+      dplyr::arrange(itemID)
+
+    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+
+    tmpResult <- enumerateCombinations(ls)
+
+    # calculate the sum of each column to check if it is equal to number of
+    # items in the shopping cart
+    sums <- tmpResult %>%
+      as.data.frame() %>%
+      tidyr::gather(key = "combination", value = "set") %>%
+      dplyr::group_by(combination) %>%
+      dplyr::summarise(total = sum(set)) %>%
+      dplyr::pull(total) %>%
+      unique()
+
+    expect_equal(sums, ls$itemsInTotal)
+
+    # specific for this example
   }
 )

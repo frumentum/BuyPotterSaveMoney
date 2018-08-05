@@ -49,3 +49,22 @@ test_that(
     expect_equal(ncol(iS$checkCorrectness), ncol(alternatives))
   }
 )
+
+test_that(
+  "Is a shopping cart of size 80 too big?",
+  {
+    set.seed(1) # for reproducibility
+    shoppingCart <- dplyr::sample_n(books, 80, replace = TRUE) %>%
+      dplyr::arrange(itemID)
+
+    timeMeasurement <- system.time({
+      ls <- analyseShoppingCart(shoppingCart, itemID, name)
+
+      alternatives <- enumerateCombinations(ls)
+
+      discountSets <- extractDiscountSets(alternatives)
+    })
+
+    expect_lte(timeMeasurement["elapsed"], 5) # less than 5 seconds
+  }
+)
