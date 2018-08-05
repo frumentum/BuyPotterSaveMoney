@@ -4,13 +4,10 @@
 \alias{analyseShoppingCart}
 \title{analyse the shopping cart}
 \usage{
-analyseShoppingCart(shoppingCart, ...)
+analyseShoppingCart(shoppingCart)
 }
 \arguments{
 \item{shoppingCart}{shopping cart as an data.frame with one row for one item}
-
-\item{...}{Variable(s) which shall be used for grouping. Can be given as a
-name.}
 }
 \value{
 It returns a list with four numeric and named values.
@@ -36,8 +33,8 @@ books <- dplyr::tibble(
 )
 
 set.seed(1)
-shoppingCart <- dplyr::sample_n(books, 8, replace = TRUE)
-shoppingCart <- dplyr::arrange(shoppingCart, itemID)
-analyseShoppingCart(shoppingCart, itemID, name)
+randomNumbers<- sample(1:10, 5, replace = T)
+shoppingCart <- dplyr::bind_cols(books, number = randomNumbers)
+analyseShoppingCart(shoppingCart)
 ```
 }

@@ -12,9 +12,11 @@ books <- dplyr::tibble(
   )
 )
 
-set.seed(1)
-shoppingCart <- dplyr::sample_n(books, 15, replace = TRUE) %>%
-  dplyr::arrange(itemID)
+set.seed(1) # for reproducibility
+shoppingCart <- dplyr::bind_cols(
+  books,
+  number = sample(0:10, 5, replace = T)
+)
 
 
 test_that(

@@ -13,10 +13,12 @@ books <- dplyr::tibble(
 )
 
 set.seed(1)
-shoppingCart <- dplyr::sample_n(books, 15, replace = TRUE) %>%
-  dplyr::arrange(itemID)
+shoppingCart <- dplyr::bind_cols(
+  books,
+  number = sample(0:8, 5, replace = T)
+)
 
-ls <- analyseShoppingCart(shoppingCart, itemID, name)
+ls <- analyseShoppingCart(shoppingCart)
 alternatives <- enumerateCombinations(ls)
 correctDiscountSets <- extractDiscountSets(alternatives)
 

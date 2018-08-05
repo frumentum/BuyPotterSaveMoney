@@ -61,7 +61,7 @@ calculatePrice <- function(
 
   if (! isTRUE(intermediateSteps) ) {
     # analyse shopping cart
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate every possible combination (and filter some useless ones)
     alternatives <- enumerateCombinations(ls)
     # filter only the meaningful combinations using two for loops
@@ -75,7 +75,7 @@ calculatePrice <- function(
 
   if (isTRUE(intermediateSteps) ) {
     # analyse shopping cart
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate every possible combination (and filter some useless ones)
     alternatives <- enumerateCombinations(ls, intermediateSteps = TRUE)
     intermediateSteps <- alternatives$intermediateSteps

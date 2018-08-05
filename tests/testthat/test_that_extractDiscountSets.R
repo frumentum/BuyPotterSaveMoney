@@ -13,10 +13,10 @@ books <- dplyr::tibble(
 )
 
 set.seed(1)
-shoppingCart <- dplyr::sample_n(books, 15, replace = TRUE) %>%
-  dplyr::arrange(itemID)
+randomNumbers <- sample(1:10, 5, replace = T)
+shoppingCart <- dplyr::bind_cols(books, number = randomNumbers)
+ls <- analyseShoppingCart(shoppingCart)
 
-ls <- analyseShoppingCart(shoppingCart, itemID, name)
 alternatives <- enumerateCombinations(ls)
 
 test_that(
@@ -54,11 +54,13 @@ test_that(
   "Is a shopping cart of size 80 too big?",
   {
     set.seed(1) # for reproducibility
-    shoppingCart <- dplyr::sample_n(books, 80, replace = TRUE) %>%
-      dplyr::arrange(itemID)
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(15, 15, 10, 20, 20)
+    )
 
     timeMeasurement <- system.time({
-      ls <- analyseShoppingCart(shoppingCart, itemID, name)
+      ls <- analyseShoppingCart(shoppingCart)
 
       alternatives <- enumerateCombinations(ls)
 

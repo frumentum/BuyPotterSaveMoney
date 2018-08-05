@@ -36,10 +36,10 @@
 #' )
 #'
 #' set.seed(1)
-#' shoppingCart <- dplyr::sample_n(books, 15, replace = TRUE) %>%
-#'   dplyr::arrange(itemID)
+#' randomNumbers <- sample(1:10, 5, replace = T)
+#' shoppingCart <- dplyr::bind_cols(books, number = randomNumbers)
 #'
-#' ls <- analyseShoppingCart(shoppingCart, itemID, name)
+#' ls <- analyseShoppingCart(shoppingCart)
 #' alternatives <- enumerateCombinations(ls)
 #' discountSets <- extractDiscountSets(alternatives)
 #'
@@ -69,7 +69,8 @@ calculateBestDiscount <- function(
   # and calculate the price per set
   discountSetTibble <- discountSets %>%
     as.data.frame() %>%
-    tidyr::gather(key = "combination", value = "set") %>%
+    tidyr::gather(key = "combination", value = "set") #%>%
+  return(discountSetTibble)
     dplyr::left_join(discountInfos, by = "set") %>%
     dplyr::mutate(price = set*pricePerItem*(1 - discount/100) )
 

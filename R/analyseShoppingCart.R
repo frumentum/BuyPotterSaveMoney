@@ -5,8 +5,6 @@
 #' at least how often do we have this 'maximum number of one item' within the
 #' shopping cart.
 #' @param shoppingCart shopping cart as an data.frame with one row for one item
-#' @param ... Variable(s) which shall be used for grouping. Can be given as a
-#' name.
 #' @return It returns a list with four numeric and named values.
 #' @examples
 #' ```
@@ -22,46 +20,41 @@
 #' )
 #'
 #' set.seed(1)
-#' shoppingCart <- dplyr::sample_n(books, 8, replace = TRUE)
-#' shoppingCart <- dplyr::arrange(shoppingCart, itemID)
-#' analyseShoppingCart(shoppingCart, itemID, name)
+#' randomNumbers <- sample(1:10, 5, replace = T)
+#' shoppingCart <- dplyr::bind_cols(books, number = randomNumbers)
+#' analyseShoppingCart(shoppingCart)
 #' ```
 #' @importFrom magrittr '%>%'
-#' @importFrom rlang ':='
 #' @export
 
-analyseShoppingCart <- function(shoppingCart, ...) {
+analyseShoppingCart <- function(shoppingCart) {
 
-  # use defined variable ... so our function can accept any number of arguments
-  group_by <- dplyr::quos(...)
-
-  # count items of the shopping cart
-  # note: Three "!!!" are necessary to accept any number of grouping variables
-  # as names
-  groupedShoppingCart <- dplyr::count(shoppingCart, !!!group_by)
+  # at first: remove items with number 0
+  shoppingCart <- shoppingCart %>%
+    dplyr::filter(number != 0)
 
   # The new column 'n' contains the number of one item, so if we summarize it
   # we'll get the total number of items
-  itemsInTotal <- sum(groupedShoppingCart$n)
+  itemsInTotal <- sum(shoppingCart$number)
   # number of rows represents the number of different items we have
-  numberOfDifferentItems <- nrow(groupedShoppingCart)
+  numberOfDifferentItems <- nrow(shoppingCart)
   # And how often was the item bought which was bought most?
-  maxNumberPerItem <- max(groupedShoppingCart$n)
+  maxNumberPerItem <- max(shoppingCart$number)
   # probably there are more than one item with the same 'maximum number per
   # item'?
-  numberOfMaxima <- groupedShoppingCart %>%
-    dplyr::filter(n == maxNumberPerItem) %>%
+  numberOfMaxima <- shoppingCart %>%
+    dplyr::filter(number == maxNumberPerItem) %>%
     nrow()
   # And how often was the item bought which was bought least?
-  minNumberPerItem <- min(groupedShoppingCart$n)
-  numberOfMinima <- groupedShoppingCart %>%
-    dplyr::filter(n == minNumberPerItem) %>%
+  minNumberPerItem <- min(shoppingCart$number)
+  numberOfMinima <- shoppingCart %>%
+    dplyr::filter(number == minNumberPerItem) %>%
     nrow()
 
   # add number of items as a vector
-  numbersOfEveryItem <- groupedShoppingCart %>%
-    dplyr::arrange(dplyr::desc(n)) %>%
-    dplyr::pull(n)
+  numbersOfEveryItem <- shoppingCart %>%
+    dplyr::arrange(dplyr::desc(number)) %>%
+    dplyr::pull(number)
 
   return(list(
     "itemsInTotal" = itemsInTotal,

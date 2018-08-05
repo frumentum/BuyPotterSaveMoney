@@ -17,18 +17,12 @@ test_that(
   "enumerate possible combinations based on restricted partitions",
   {
     # create first test shopping cart with the combination 3,1,1,3
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[3, ],
-      books[4, ],
-      books[5, ],
-      books[5, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(3, 1, 1, 3, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
 
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
@@ -96,18 +90,12 @@ test_that(
   "enumerateCombinations() specially for combination 3,1,1,3",
   {
     # create first test shopping cart with the combination 3,1,1,3
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[3, ],
-      books[4, ],
-      books[5, ],
-      books[5, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(3, 1, 1, 3, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -145,16 +133,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,1",
   {
     # create first test shopping cart with the combination 5,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(0, 0, 1, 5, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -191,20 +175,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,1",
   {
     # create first test shopping cart with the combination 5,4,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(5, 4, 1, 0, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -244,21 +220,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,1,1",
   {
     # create first test shopping cart with the combination 5,4,1,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[4, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(5, 4, 1, 1, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -293,22 +260,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,1,1,1",
   {
     # create first test shopping cart with the combination 5,4,1,1,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[4, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(5, 4, 1, 1, 1)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -342,21 +299,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,2",
   {
     # create first test shopping cart with the combination 5,4,2
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(0, 5, 4, 2, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -387,23 +335,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,2,2",
   {
     # create first test shopping cart with the combination 5,4,2,2
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[4, ],
-      books[4, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(5, 4, 2, 2, 0)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -436,25 +373,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,2,2,2",
   {
     # create first test shopping cart with the combination 5,4,2,2,2
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[4, ],
-      books[4, ],
-      books[5, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(2, 2, 4, 2, 5)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -492,28 +416,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,3,3,3",
   {
     # create first test shopping cart with the combination 5,4,3,3,3
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[3, ],
-      books[4, ],
-      books[4, ],
-      books[4, ],
-      books[5, ],
-      books[5, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(3, 4, 5, 3, 3)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -551,25 +459,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,4,3,2,1",
   {
     # create first test shopping cart with the combination 5,4,3,2,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[3, ],
-      books[4, ],
-      books[4, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(1, 4, 5, 3, 2)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -606,20 +501,12 @@ test_that(
   "enumerateCombinations() specially for combination 3,3,3,1",
   {
     # create first test shopping cart with the combination 3,3,3,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[3, ],
-      books[4, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(3, 3, 0, 1, 3)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -649,21 +536,12 @@ test_that(
   "enumerateCombinations() specially for combination 4,3,3,1",
   {
     # create first test shopping cart with the combination 4,3,3,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[3, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(0, 1, 4, 3, 3)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -695,20 +573,12 @@ test_that(
   "enumerateCombinations() specially for combination 4,4,1,1",
   {
     # create first test shopping cart with the combination 4,4,1,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(0, 4, 4, 1, 1)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -739,24 +609,12 @@ test_that(
   "enumerateCombinations() specially for combination 4,4,3,2,1",
   {
     # create first test shopping cart with the combination 4,4,3,2,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[3, ],
-      books[3, ],
-      books[5, ],
-      books[5, ],
-      books[4, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(3, 2, 1, 4, 4)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -787,18 +645,12 @@ test_that(
   "enumerateCombinations() specially for combination 2,2,2,1,1",
   {
     # create first test shopping cart with the combination 2,2,2,1,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[4, ],
-      books[4, ],
-      books[1, ],
-      books[1, ],
-      books[3, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(2, 2, 2, 1, 1)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -829,21 +681,12 @@ test_that(
   "enumerateCombinations() specially for combination 5,3,2,1",
   {
     # create first test shopping cart with the combination 5,3,2,1
-    shoppingCart <- dplyr::bind_rows(
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[2, ],
-      books[4, ],
-      books[4, ],
-      books[4, ],
-      books[1, ],
-      books[1, ],
-      books[5, ]
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(0, 3, 2, 1, 5)
     )
     # analyse shopping cart at first
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
     # enumerate combinations and test the output
     tmpResult <- enumerateCombinations(ls, intermediateSteps = FALSE)
     tmpResultT <- enumerateCombinations(ls, intermediateSteps = TRUE)
@@ -877,10 +720,12 @@ test_that(
   "one last example for a shopping cart consisting of 80 items",
   {
     set.seed(1) # for reproducibility
-    shoppingCart <- dplyr::sample_n(books, 80, replace = TRUE) %>%
-      dplyr::arrange(itemID)
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(15, 15, 10, 20, 20)
+    )
 
-    ls <- analyseShoppingCart(shoppingCart, itemID, name)
+    ls <- analyseShoppingCart(shoppingCart)
 
     tmpResult <- enumerateCombinations(ls)
 
