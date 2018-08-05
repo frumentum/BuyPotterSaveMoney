@@ -45,5 +45,14 @@ test_that(
 
     expect_length(iS, 9)
 
+
+    ## some price tests
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(1,1,4,1,1)
+    )
+    priceInfo <- calculatePrice(shoppingCart, discountTibble, pricePerItem = 8)
+
+    expect_equal(unname(priceInfo["priceWithoutDiscount"]), 8*8)
   }
 )
