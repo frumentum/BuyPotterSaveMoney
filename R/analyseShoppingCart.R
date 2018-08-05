@@ -9,21 +9,23 @@
 #' name.
 #' @return It returns a list with four numeric and named values.
 #' @examples
+#' ```
 #' books <- dplyr::tibble(
-#' itemID = 1:5,
-#' name = c(
-#' "Stein der Weisen",
-#' "Kammer des Schreckens",
-#' "Gefangene von Askaban",
-#' "Feuerkelch",
-#' "Orden des Phönix"
+#'   itemID = 1:5,
+#'   name = c(
+#'     "Stein der Weisen",
+#'     "Kammer des Schreckens",
+#'     "Gefangene von Askaban",
+#'     "Feuerkelch",
+#'     "Orden des Phönix"
+#'   )
 #' )
-#' )
-
+#'
 #' set.seed(1)
 #' shoppingCart <- dplyr::sample_n(books, 8, replace = TRUE)
 #' shoppingCart <- dplyr::arrange(shoppingCart, itemID)
 #' analyseShoppingCart(shoppingCart, itemID, name)
+#' ```
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang ':='
 #' @export
