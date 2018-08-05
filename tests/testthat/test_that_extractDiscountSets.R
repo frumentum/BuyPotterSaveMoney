@@ -22,22 +22,30 @@ alternatives <- enumerateCombinations(ls)
 test_that(
   "extract only the possible discount sets",
   {
-    possibleDiscountSets <- extractDiscountSets(alternatives)
+    correctDiscountSets <- extractDiscountSets(alternatives)
 
     # the output should be a matrix again
-    expect_is(possibleDiscountSets, "matrix")
+    expect_is(correctDiscountSets, "matrix")
 
     # and the number of columns should be lower or equal to 'alternatives'
-    expect_lte(ncol(alternatives), ncol(possibleDiscountSets))
+    expect_lte(ncol(correctDiscountSets), ncol(alternatives))
 
     # if we let us show the intermediate steps, we see that every possible
     # discount set solution works
     discountSteps <- extractDiscountSets(alternatives, intermediateSteps = T)
     expect_is(discountSteps, "list")
     expect_length(discountSteps, 2)
-    expect_is(discountSteps$possibleDiscountSets, "matrix")
-    expect_equal(discountSteps$possibleDiscountSets, possibleDiscountSets)
-    expect_is(discountSteps$intermediateSteps, "matrix")
-    expect_equal(ncol(discountSteps$intermediateSteps), ncol(alternatives))
+    expect_is(discountSteps$correctDiscountSets, "matrix")
+    expect_equal(discountSteps$correctDiscountSets, correctDiscountSets)
+    expect_is(discountSteps$intermediateSteps, "list")
+    iS <- discountSteps$intermediateSteps
+    expect_is(iS$checkCorrectness, "matrix")
+    expect_is(iS$incorrectDiscountSets, "character")
+    # incorrect discount sets is the length difference between the number of
+    # columns of 'alternatives' and the correct number of discount sets
+    expect_length(
+      iS$incorrectDiscountSets, ncol(alternatives) - ncol(correctDiscountSets)
+    )
+    expect_equal(ncol(iS$checkCorrectness), ncol(alternatives))
   }
 )

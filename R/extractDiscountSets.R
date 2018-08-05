@@ -30,9 +30,11 @@
 #' extractDiscountSets(alternatives)
 #' ```
 #' @export
+#' @importFrom magrittr '%>%'
 
 extractDiscountSets <- function(alternatives, intermediateSteps = FALSE) {
 
+  colnames(alternatives) <- paste0("V", 1:ncol(alternatives))
   checkCorrectness <- alternatives
 
   for (i in seq_len(ncol(checkCorrectness)) ) {
@@ -54,9 +56,26 @@ extractDiscountSets <- function(alternatives, intermediateSteps = FALSE) {
     }
   }
 
-  return(checkCorrectness)
-  filterCorrectCombinations <- which(
-    checkCorrectness[,]
-  )
+  incorrectDiscountSets <- checkCorrectness %>%
+    as.data.frame() %>%
+    # dplyr::bind_cols(summands = paste0("summand", 1:nrow(checkCorrectness))) %>%
+    tidyr::gather(key = "combination", value = "value") %>%
+    dplyr::filter(value < 0) %>%
+    dplyr::distinct(combination) %>%
+    dplyr::pull(combination)
+
+  correctDiscountSets <- which(colnames(alternatives) != incorrectDiscountSets)
+  correctDiscountSets <- alternatives[, correctDiscountSets]
+
+  if (isTRUE(intermediateSteps)) {
+    intermediateSteps <- list(
+      "checkCorrectness" = checkCorrectness,
+      "incorrectDiscountSets" = incorrectDiscountSets
+    )
+    return(list(
+      "correctDiscountSets" = correctDiscountSets,
+      "intermediateSteps" = intermediateSteps
+    ))
+  } else return(correctDiscountSets)
 
 }
