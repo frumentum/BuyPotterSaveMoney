@@ -41,7 +41,7 @@
 #'
 #' ls <- analyseShoppingCart(shoppingCart)
 #' alternatives <- enumerateCombinations(ls)
-#' discountSets <- extractDiscountSets(alternatives)
+#' discountSets <- extractDiscountSets(alternatives, ls$numbersOfEveryItem)
 #'
 #' discountInfos <- dplyr::tibble(
 #'   set = 1:5,

@@ -22,7 +22,9 @@ alternatives <- enumerateCombinations(ls)
 test_that(
   "extract only the possible discount sets",
   {
-    correctDiscountSets <- extractDiscountSets(alternatives)
+    correctDiscountSets <- extractDiscountSets(
+      alternatives, ls$numbersOfEveryItem
+    )
 
     # the output should be a matrix again
     expect_is(correctDiscountSets, "matrix")
@@ -32,7 +34,9 @@ test_that(
 
     # if we let us show the intermediate steps, we see that every possible
     # discount set solution works
-    discountSteps <- extractDiscountSets(alternatives, intermediateSteps = T)
+    discountSteps <- extractDiscountSets(
+      alternatives, alternatives, ls$numbersOfEveryItem, intermediateSteps = T
+    )
     expect_is(discountSteps, "list")
     expect_length(discountSteps, 2)
     expect_is(discountSteps$correctDiscountSets, "matrix")

@@ -20,7 +20,7 @@ shoppingCart <- dplyr::bind_cols(
 
 ls <- analyseShoppingCart(shoppingCart)
 alternatives <- enumerateCombinations(ls)
-correctDiscountSets <- extractDiscountSets(alternatives)
+correctDiscountSets <- extractDiscountSets(alternatives, ls$numbersOfEveryItem)
 
 discountTibble <- dplyr::tibble(
   set = 1:5,

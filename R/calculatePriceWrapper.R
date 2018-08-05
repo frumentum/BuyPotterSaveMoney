@@ -65,7 +65,7 @@ calculatePrice <- function(
     # enumerate every possible combination (and filter some useless ones)
     alternatives <- enumerateCombinations(ls)
     # filter only the meaningful combinations using two for loops
-    discountSets <- extractDiscountSets(alternatives)
+    discountSets <- extractDiscountSets(alternatives, ls$numbersOfEveryItem)
     # calculate the best discount
     bestDiscount <- calculateBestDiscount(
       discountSets, discountInfos, pricePerItem
@@ -81,7 +81,9 @@ calculatePrice <- function(
     intermediateSteps <- alternatives$intermediateSteps
     alternatives <- alternatives$alternatives
     # filter only the meaningful combinations using two for loops
-    discountSets <- extractDiscountSets(alternatives, intermediateSteps = TRUE)
+    discountSets <- extractDiscountSets(
+      alternatives, ls$numbersOfEveryItem, intermediateSteps = TRUE
+    )
     intermediateSteps <- c(intermediateSteps, discountSets$intermediateSteps)
     discountSets <- discountSets$correctDiscountSets
     # calculate the best discount

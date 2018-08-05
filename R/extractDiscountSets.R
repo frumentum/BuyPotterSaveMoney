@@ -4,6 +4,8 @@
 #' discount sets.
 #' @param alternatives \code{matrix} as it comes from
 #' \code{enumerateCombinations()}
+#' @param allNumbers numbers of all items in the shopping cart as it comes from
+#' \code{analyseShoppingCart()}
 #' @param intermediateSteps logical; default is \code{FALSE}
 #' @return If \code{intermediateSteps} is set to \code{TRUE}, a list will be
 #' returned; otherwise a matrix
@@ -27,45 +29,50 @@
 #'
 #' ls <- analyseShoppingCart(shoppingCart, itemID, name)
 #' alternatives <- enumerateCombinations(ls)
-#' extractDiscountSets(alternatives)
+#' extractDiscountSets(alternatives, ls$numbersOfEveryItem)
 #' ```
 #' @export
 #' @importFrom magrittr '%>%'
 
-extractDiscountSets <- function(alternatives, intermediateSteps = FALSE) {
+extractDiscountSets <- function(
+  alternatives, allNumbers, intermediateSteps = FALSE
+) {
 
   colnames(alternatives) <- paste0("V", 1:ncol(alternatives))
-  checkCorrectness <- alternatives
 
-  for (i in seq_len(ncol(checkCorrectness)) ) {
+  nMat <- matrix(
+    allNumbers, nrow = length(allNumbers), ncol = ncol(alternatives)
+  )
+  colnames(nMat) <- colnames(alternatives)
+
+  for (i in seq_len(ncol(alternatives)) ) {
     # for debugging
-    # if (i >= 2) break
+    # if (i >= 10) break
 
-    # 'n' are the numbers we substract from each column, but only 'n' rows
-    n <- checkCorrectness[, i]
-    for (j in seq_len(nrow(checkCorrectness)) ) {
-      # print(n[j])
-      # print(checkCorrectness[, i])
-      checkCorrectness[1:n[j], i] <- checkCorrectness[1:n[j], i] - 1
-      # print(checkCorrectness[, i])
-      if (-1 %in% checkCorrectness[, i]) break
+    for (j in seq_len(nrow(alternatives)) ) {
+      # print(nMat[, i])
+      # print(alternatives[j, i])
+      numberToSubstract <- alternatives[j, i]
+      nMat[1:numberToSubstract, i] <- nMat[1:numberToSubstract, i] - 1
+      # print(nMat[, i])
+      if (-1 %in% nMat[, i]) break
 
       # sorting is important. Otherwise substraction doesn't work correctly
-      checkCorrectness[, i] <- sort(checkCorrectness[, i], decreasing = T)
-      # print(checkCorrectness[, i])
+      nMat[, i] <- sort(nMat[, i], decreasing = T)
+      # print(nMat[, i])
     }
   }
 
-  incorrectDiscountSets <- checkCorrectness %>%
+  incorrectDiscount <- nMat %>%
     as.data.frame() %>%
     # dplyr::bind_cols(summands = paste0("summand", 1:nrow(checkCorrectness))) %>%
     tidyr::gather(key = "combination", value = "value") %>%
     dplyr::filter(value < 0) %>%
     dplyr::distinct(combination) %>%
     dplyr::pull(combination)
-  # if (length(incorrectDiscountSets) == 0) incorrectDiscountSets <- "OK"
+  # if (length(incorrectDiscount) == 0) incorrectDiscount <- "OK"
 
-  correctDiscountSets <- which(colnames(alternatives) != incorrectDiscountSets)
+  correctDiscountSets <- which(! colnames(alternatives) %in% incorrectDiscount)
   correctDiscountSets <- alternatives[, correctDiscountSets]
 
   if (isTRUE(intermediateSteps)) {
