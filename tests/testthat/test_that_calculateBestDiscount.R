@@ -22,7 +22,7 @@ correctDiscountSets <- extractDiscountSets(alternatives)
 
 discountTibble <- dplyr::tibble(
   set = 1:5,
-  discount = c(0, 0.05, 0.1, 0.2, 0.25)
+  discount = c(0, 5, 10, 20, 25)
 )
 
 test_that(

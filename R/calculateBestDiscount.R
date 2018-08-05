@@ -45,7 +45,7 @@
 #'
 #' discountTibble <- dplyr::tibble(
 #'   set = 1:5,
-#'   discount = c(0, 0.05, 0.1, 0.2, 0.25)
+#'   discount = c(0, 5, 10, 20, 25)
 #' )
 #' calculateBestDiscount(
 #'    correctDiscountSets, discountTibble, pricePerItem = 8
@@ -58,6 +58,52 @@ calculateBestDiscount <- function(
   discountSets, discountTibble, pricePerItem, intermediateSteps = FALSE
 ) {
 
+  # some security checks at the beginning
+  stopifnot(is.matrix(discountSets))
+  stopifnot(is.data.frame(discountTibble))
+  stopifnot(is.numeric(pricePerItem))
+  stopifnot(ncol(discountTibble) == 2)
+  stopifnot(length(pricePerItem) == 1)
 
+  # join the different discount sets with the information about the discount
+  # and calculate the price per set
+  discountSetTibble <- discountSets %>%
+    as.data.frame() %>%
+    tidyr::gather(key = "combination", value = "set") %>%
+    dplyr::left_join(discountTibble, by = "set") %>%
+    dplyr::mutate(price = set*pricePerItem*(1 - discount/100) )
+
+  # build the sum over every possible discount combination and choose the
+  # cheapest one
+  bestDiscountSet <- discountSetTibble %>%
+    dplyr::group_by(combination) %>%
+    dplyr::summarise(itemsInTotal = sum(set),
+                     price = sum(price)) %>%
+    dplyr::filter(price == min(price)) %>%
+    dplyr::mutate(priceWithoutDiscount = itemsInTotal*pricePerItem,
+                  discountAbs = priceWithoutDiscount - price,
+                  discountPercent = (1 - (price / priceWithoutDiscount)) * 100)
+
+  # probably sometimes it can happen that more combinations lead to the same
+  # price in total. In these cases take the first combination
+  if (nrow(bestDiscountSet) > 1) bestDiscountSet <- bestDiscountSet[1, ]
+
+  # return(discountSetTibble)
+  # add information about the composition of the best discount set
+  bestDiscountSetDetailed <- discountSetTibble %>%
+    dplyr::filter(combination == bestDiscountSet$combination) %>%
+    dplyr::select(set) %>%
+    dplyr::mutate(setN = paste0("set", 1:dplyr::n() ) ) %>%
+    tidyr::spread(key = setN, value = set) %>%
+    dplyr::bind_cols(bestDiscountSet)
+
+  necessaryInformation <- bestDiscountSetDetailed %>%
+    dplyr::rename(priceInTotal = price) %>%
+    dplyr::select(
+      priceInTotal, discountAbs, discountPercent, priceWithoutDiscount
+    ) %>%
+    unlist()
+
+  return(necessaryInformation)
 
 }
