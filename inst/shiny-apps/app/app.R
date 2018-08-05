@@ -26,6 +26,23 @@ ui <- fluidPage(
   br(),
   fluidRow(
     column(
+      2, offset = 1, img(src = "derSteinDerWeisen_skaliert.jpg")
+    ),
+    column(
+      2, img(src = "dieKammerDesSchreckens.jpeg")
+    ),
+    column(
+      2, img(src = "derGefangeneVonAskaban_skaliert.jpg")
+    ),
+    column(
+      2, img(src = "derFeuerkelch.jpeg")
+    ),
+    column(
+      2, img(src = "derOrdenDesPhönix.jpeg")
+    )
+  ),
+  fluidRow(
+    column(
       2, offset = 1,
       numericInput(
         "item1", label = paste("Harry Potter und", books$name[1]),
