@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(tidyr)
 library(partitions)
+library(BuyPotterSaveMoney)
 
 #### setup ####
 # These books are available in the shop
@@ -101,7 +102,16 @@ ui <- fluidPage(
       3, offset = 2,
       uiOutput("goShoppingCart")
     )
-  )
+  ),
+  br(), # 3 break lines
+  br(),
+  br(),
+  h4(
+    "Rabattaktion: Bei zwei verschiedenen Büchern gibt es 5% auf diese zwei",
+    "Bücher. Bei drei verschiedenen Büchern gibt es 10%, bei vier gibt es 20%",
+    "und bei fünf verschiedenen Büchern sogar 25%."
+  ),
+  h3("Musst du kaufen, kannst du sparen!")
 )
 
 ################################################################################
@@ -134,11 +144,12 @@ server <- function(input, output, session) {
   observeEvent(input$moveToShoppingCart, {
     inputs <- c(input$item1, input$item2, input$item3, input$item4, input$item5)
     if (sum(inputs > 19) != 0) {
+      rV$inputIsOK <- NULL # reset first
       rV$inputIsOK <- FALSE
     } else {
+      rV$inputIsOK <- NULL # reset first
       rV$inputIsOK <- TRUE
     }
-
   })
 
   # if input is not OK, inform the user. Otherwise analyse the shopping cart.
@@ -168,22 +179,7 @@ server <- function(input, output, session) {
 
   # create a modal dialog to show the shopping cast
   observeEvent(identifyShoppingCart(), {
-    if (identifyShoppingCart() == "showErrorMessage") {
-      showModal(modalDialog(
-        h2("Aufgrund eines doofen Programierfehlers ist es derzeit leider",
-           "nicht möglich, 20 Bücher oder mehr von einem Buch in den Warenkorb",
-           "zu legen."),
-        h3("Grund: Im ersten Schritt der Rabattberechnung wurde aus der",
-           "Gesamtanzahl an Büchern", em("n"), "im Warenkorb alle möglichen",
-           "Partitionen mit", em("k"), "Summanden berechnet, wobei",
-           em("k"), "gleich der maximalen Anzahl eines Buches entspricht.",
-           "Da alle Ergebnisse in einer Matrix abgespeichert werden, führt",
-           "dies sehr schnell zu hohen Datenmengen, was letztlich zum",
-           "Prozessabruch führt. Leider fiel mir dieser Fehler erst zu spät",
-           "auf."),
-        footer = modalButton("Na gut!")
-      ))
-    } else {
+    if (isTRUE(rV$inputIsOK)) {
       showModal(modalDialog(
         title = "Warenkorb",
         fluidRow(
@@ -197,6 +193,21 @@ server <- function(input, output, session) {
           modalButton("Warenkorb ändern"),
           actionButton("buy", "Kaufen")
         )
+      ))
+    } else {
+      showModal(modalDialog(
+        h2("Aufgrund eines doofen Programierfehlers ist es derzeit leider",
+           "nicht möglich, 20 Bücher oder mehr von einem Buch in den Warenkorb",
+           "zu legen."),
+        h3("Grund: Im ersten Schritt der Rabattberechnung wurden aus der",
+           "Gesamtanzahl an Büchern", em("n"), "im Warenkorb alle möglichen",
+           "Partitionen mit", em("k"), "Summanden berechnet, wobei",
+           em("k"), "gleich der maximalen Anzahl eines Buches entspricht.",
+           "Da alle Ergebnisse in einer Matrix abgespeichert werden, führt",
+           "dies sehr schnell zu hohen Datenmengen, was letztlich zum",
+           "Prozessabruch führt. Leider fiel mir dieser Fehler erst zu spät",
+           "auf."),
+        footer = modalButton("Na gut!")
       ))
     }
   })
@@ -258,7 +269,11 @@ server <- function(input, output, session) {
           column(6, img(src = "bitcoin_skaliert.png")),
           column(6, img(src = "myPublicKey.png"))
         ),
-        footer = modalButton("Vielleicht ein andermal!")
+        footer = modalButton(
+          ifelse(rV$counter != 15,
+                 "Vielleicht ein andermal!",
+                 "Einladen kann nie schaden!")
+        )
       ))
     }
   })
@@ -269,8 +284,7 @@ server <- function(input, output, session) {
     if (rV$counter == 10) brick <- "Dem Entwickler einen Kaffee kaufen!"
     if (rV$counter == 15)
       brick <- paste(
-        "So stark wie der Code hier getestet wird hat der Entwickler",
-        "nun wirklich einen Kaffee verdient!"
+        "Oder den Entwickler einstellen?"
       )
     paste("<h2>", brick, "</h2>")
   })
