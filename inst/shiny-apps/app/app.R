@@ -28,6 +28,19 @@ pricePerItem <<- 8
 ###################### shiny UI ################################################
 ################################################################################
 ui <- fluidPage(
+  includeCSS("styles.css"), # for styling the header
+  headerPanel(
+    title = "Willkommen im Zauberland des Harry Potter!",
+    windowTitle = "Harry Potters Zauberland"
+  ),
+  br(), # 3 break lines
+  br(),
+  br(),
+  h3(
+    "Um Produkte zum Warenkorb hinzuzufügen, einfach die gewünschte Menge in",
+    "die dafür vorgesehenen Felder eingeben und anschließend",
+    em("in den Warenkorb legen"), "!"
+  ),
   br(),
   fluidRow(
     column(
@@ -51,35 +64,35 @@ ui <- fluidPage(
       2, offset = 1,
       numericInput(
         "item1", label = paste("Harry Potter und", books$name[1]),
-        min = 0, max = 20, value = 0, step = 1
+        min = 0, max = 19, value = 0, step = 1
       )
     ),
     column(
       2,
       numericInput(
         "item2", label = paste("Harry Potter und", books$name[2]),
-        min = 0, max = 20, value = 0, step = 1
+        min = 0, max = 19, value = 0, step = 1
       )
     ),
     column(
       2,
       numericInput(
         "item3", label = paste("Harry Potter und", books$name[3]),
-        min = 0, max = 20, value = 0, step = 1
+        min = 0, max = 19, value = 0, step = 1
       )
     ),
     column(
       2,
       numericInput(
         "item4", label = paste("Harry Potter und", books$name[4]),
-        min = 0, max = 20, value = 0, step = 1
+        min = 0, max = 19, value = 0, step = 1
       )
     ),
     column(
       2,
       numericInput(
         "item5", label = paste("Harry Potter und", books$name[5]),
-        min = 0, max = 20, value = 0, step = 1
+        min = 0, max = 19, value = 0, step = 1
       )
     )
   ),
@@ -96,6 +109,14 @@ ui <- fluidPage(
 ################################################################################
 server <- function(input, output, session) {
 
+  # create a reactive counter which counts the number of shoppings +
+  # a reactive logical information if the input is correct
+  rV <- reactiveValues(
+    counter = NULL,
+    inputIsOK = NULL
+  )
+
+
   # create action button "moveToShoppingCart"
   output$goShoppingCart <- renderUI({
     if (input$item1 != 0 ||
@@ -109,44 +130,75 @@ server <- function(input, output, session) {
     }
   })
 
+  # security check that no error can occur
+  observeEvent(input$moveToShoppingCart, {
+    inputs <- c(input$item1, input$item2, input$item3, input$item4, input$item5)
+    if (sum(inputs > 19) != 0) {
+      rV$inputIsOK <- FALSE
+    } else {
+      rV$inputIsOK <- TRUE
+    }
+
+  })
+
+  # if input is not OK, inform the user. Otherwise analyse the shopping cart.
   # make 'moveToShoppingCart' reactive and identify the shopping cart
-  identifyShoppingCart <- eventReactive(input$moveToShoppingCart, {
-    shoppingCart <- books %>%
-      dplyr::bind_cols(
-        number = c(input$item1, input$item2, input$item3, input$item4,
-                   input$item5)
+  identifyShoppingCart <- eventReactive(rV$inputIsOK, {
+    if (isTRUE(rV$inputIsOK)) {
+      shoppingCart <- books %>%
+        dplyr::bind_cols(
+          number = c(input$item1, input$item2, input$item3, input$item4,
+                     input$item5)
+        )
+
+      bestDiscountDetailed <- calculatePrice(
+        shoppingCart, discountInfos, pricePerItem, intermediateSteps = TRUE
       )
 
-    bestDiscountDetailed <- calculatePrice(
-      shoppingCart, discountInfos, pricePerItem, intermediateSteps = TRUE
-    )
+      # change column names to display
+      colnames(shoppingCart) <- c("Position", "Bezeichnung", "Anzahl")
+      shoppingCart <- shoppingCart %>%
+        dplyr::filter(Anzahl != 0)
+      bestDiscountDetailed$shoppingCart <- shoppingCart
 
-    # change column names to display
-    colnames(shoppingCart) <- c("Position", "Bezeichnung", "Anzahl")
-    shoppingCart <- shoppingCart %>%
-      dplyr::filter(Anzahl != 0)
-    bestDiscountDetailed$shoppingCart <- shoppingCart
-
-    return(bestDiscountDetailed)
+      return(bestDiscountDetailed)
+    } else return("showErrorMessage")
   })
 
 
   # create a modal dialog to show the shopping cast
   observeEvent(identifyShoppingCart(), {
-    showModal(modalDialog(
-      title = "Warenkorb",
-      fluidRow(
-        column(7, tableOutput("shoppingCartTable")),
-        column(5, htmlOutput("showDiscount", style="transform: rotate(40deg)"))
-      ),
-      hr(), # draw a horizontal line
-      fluidRow(column(9, offset = 3, htmlOutput("price"))),
+    if (identifyShoppingCart() == "showErrorMessage") {
+      showModal(modalDialog(
+        h2("Aufgrund eines doofen Programierfehlers ist es derzeit leider",
+           "nicht möglich, 20 Bücher oder mehr von einem Buch in den Warenkorb",
+           "zu legen."),
+        h3("Grund: Im ersten Schritt der Rabattberechnung wurde aus der",
+           "Gesamtanzahl an Büchern", em("n"), "im Warenkorb alle möglichen",
+           "Partitionen mit", em("k"), "Summanden berechnet, wobei",
+           em("k"), "gleich der maximalen Anzahl eines Buches entspricht.",
+           "Da alle Ergebnisse in einer Matrix abgespeichert werden, führt",
+           "dies sehr schnell zu hohen Datenmengen, was letztlich zum",
+           "Prozessabruch führt. Leider fiel mir dieser Fehler erst zu spät",
+           "auf."),
+        footer = modalButton("Na gut!")
+      ))
+    } else {
+      showModal(modalDialog(
+        title = "Warenkorb",
+        fluidRow(
+          column(7, tableOutput("shoppingCartTable")),
+          column(5, htmlOutput("showDiscount", style="transform: rotate(40deg)"))
+        ),
+        hr(), # draw a horizontal line
+        fluidRow(column(9, offset = 3, htmlOutput("price"))),
 
-      footer = tagList(
-        modalButton("Warenkorb ändern"),
-        actionButton("buy", "Kaufen")
-      )
-    ))
+        footer = tagList(
+          modalButton("Warenkorb ändern"),
+          actionButton("buy", "Kaufen")
+        )
+      ))
+    }
   })
 
   # render shopping cart table
@@ -176,9 +228,6 @@ server <- function(input, output, session) {
   })
 
   ################## observe 'buy'-button ######################################
-  # create a reactive counter: each time 'buy'-button is pressed -> counter + 1
-  rV <- reactiveValues(counter = NULL)
-
   # observe buy-button
   observeEvent(input$buy, {
     # update counter
@@ -209,10 +258,7 @@ server <- function(input, output, session) {
           column(6, img(src = "bitcoin_skaliert.png")),
           column(6, img(src = "myPublicKey.png"))
         ),
-        footer = tagList(
-          modalButton("Nein, danke!"),
-          actionButton("maybe", "Vielleicht später!")
-        )
+        footer = modalButton("Vielleicht ein andermal!")
       ))
     }
   })
@@ -223,10 +269,10 @@ server <- function(input, output, session) {
     if (rV$counter == 10) brick <- "Dem Entwickler einen Kaffee kaufen!"
     if (rV$counter == 15)
       brick <- paste(
-        "So stark wie der Code hier getestet wird hat der Entwickler nun",
-        "wirklich einen Kaffee verdient!"
+        "So stark wie der Code hier getestet wird hat der Entwickler",
+        "nun wirklich einen Kaffee verdient!"
       )
-    brick
+    paste("<h2>", brick, "</h2>")
   })
 }
 
