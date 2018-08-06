@@ -63,21 +63,21 @@ ui <- fluidPage(
     ),
     column(
       2,
-      sliderInput(
+      numericInput(
         "item3", label = paste("Harry Potter und", books$name[3]),
         min = 0, max = 20, value = 0, step = 1
       )
     ),
     column(
       2,
-      sliderInput(
+      numericInput(
         "item4", label = paste("Harry Potter und", books$name[4]),
         min = 0, max = 20, value = 0, step = 1
       )
     ),
     column(
       2,
-      sliderInput(
+      numericInput(
         "item5", label = paste("Harry Potter und", books$name[5]),
         min = 0, max = 20, value = 0, step = 1
       )
@@ -94,7 +94,7 @@ ui <- fluidPage(
 ################################################################################
 ######################### shiny server #########################################
 ################################################################################
-server <- function(input, output, server) {
+server <- function(input, output, session) {
 
   # create action button "moveToShoppingCart"
   output$goShoppingCart <- renderUI({
@@ -149,10 +149,11 @@ server <- function(input, output, server) {
     ))
   })
 
+  # render shopping cart table
   output$shoppingCartTable <- renderTable({
     identifyShoppingCart()$shoppingCart
   })
-
+  # render price
   output$price <- renderText({
     infos <- identifyShoppingCart()$bestDiscount
     oldPrice <- unname(infos["priceWithoutDiscount"])
@@ -164,15 +165,68 @@ server <- function(input, output, server) {
       "<font color=\"#00ff00\" size=\"20px\">", newPrice, "€", "</font>"
     )
   })
-
+  # render the discount in percent
   output$showDiscount <- renderText({
     infos <- identifyShoppingCart()$bestDiscount
     discountPercent <- round(unname(infos["discountPercent"]), digits = 1)
-
     paste(
-      "Sie sparen",
+      "Du sparst",
       "<font color=\"#cd853f\" size=\"20px\">", discountPercent, "%", "</font>"
     )
+  })
+
+  ################## observe 'buy'-button ######################################
+  # create a reactive counter: each time 'buy'-button is pressed -> counter + 1
+  rV <- reactiveValues(counter = NULL)
+
+  # observe buy-button
+  observeEvent(input$buy, {
+    # update counter
+    if ( is.null(rV$counter) ) {
+      rV$counter <- 1
+    } else {
+      rV$counter <- rV$counter + 1
+    }
+
+    # reset all numerical inputs for the items
+    updateNumericInput(session, inputId = "item1", value = 0)
+    updateNumericInput(session, inputId = "item2", value = 0)
+    updateNumericInput(session, inputId = "item3", value = 0)
+    updateNumericInput(session, inputId = "item4", value = 0)
+    updateNumericInput(session, inputId = "item5", value = 0)
+
+    removeModal(session)
+  })
+
+  observeEvent(rV$counter, {
+    if (rV$counter %in% c(3, 10, 15)) {
+      showModal(modalDialog(
+        fluidRow(
+          column(12, htmlOutput("welcome", style = "font-style: italic"))
+        ),
+
+        fluidRow(
+          column(6, img(src = "bitcoin_skaliert.png")),
+          column(6, img(src = "myPublicKey.png"))
+        ),
+        footer = tagList(
+          modalButton("Nein, danke!"),
+          actionButton("maybe", "Vielleicht später!")
+        )
+      ))
+    }
+  })
+
+  output$welcome <- renderText({
+    if (rV$counter == 3)
+      brick <- "Dem Entwickler vielleicht einen Kaffee kaufen?"
+    if (rV$counter == 10) brick <- "Dem Entwickler einen Kaffee kaufen!"
+    if (rV$counter == 15)
+      brick <- paste(
+        "So stark wie der Code hier getestet wird hat der Entwickler nun",
+        "wirklich einen Kaffee verdient!"
+      )
+    brick
   })
 }
 
