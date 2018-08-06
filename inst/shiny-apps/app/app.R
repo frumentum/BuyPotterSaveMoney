@@ -3,6 +3,7 @@ library(dplyr)
 library(tidyr)
 library(partitions)
 
+#### setup ####
 # These books are available in the shop
 books <<- dplyr::tibble(
   itemID = 1:5,
@@ -21,7 +22,11 @@ discountInfos <<- dplyr::tibble(
 )
 
 pricePerItem <<- 8
+#### ebd of setup ###
 
+################################################################################
+###################### shiny UI ################################################
+################################################################################
 ui <- fluidPage(
   br(),
   fluidRow(
@@ -93,6 +98,9 @@ ui <- fluidPage(
   )
 )
 
+################################################################################
+######################### shiny server #########################################
+################################################################################
 server <- function(input, output, server) {
 
   # create action button "moveToShoppingCart"
@@ -120,14 +128,45 @@ server <- function(input, output, server) {
       shoppingCart, discountInfos, pricePerItem, intermediateSteps = TRUE
     )
 
-    bestDiscount <- bestDiscountDetailed$bestDiscount
+    # change column names to display
+    colnames(shoppingCart) <- c("Position", "Bezeichnung", "Anzahl")
+    shoppingCart <- shoppingCart %>%
+      dplyr::filter(Anzahl != 0)
+    bestDiscountDetailed$shoppingCart <- shoppingCart
 
-    return(bestDiscount)
+    return(bestDiscountDetailed)
   })
 
-  # send price to display
-  output$price <- renderPrint({
-    identifyShoppingCart()
+
+  # create a modal dialog to show the shopping cast
+  observeEvent(identifyShoppingCart(), {
+    showModal(modalDialog(
+      title = "Warenkorb",
+      fluidRow(column(12, tableOutput("shoppingCartTable"))),
+      hr(), # draw a horizontal line
+      fluidRow(column(9, offset = 3, htmlOutput("withoutDiscount"))),
+
+      footer = tagList(
+        modalButton("Warenkorb ändern"),
+        actionButton("buy", "Kaufen")
+      )
+    ))
+  })
+
+  output$shoppingCartTable <- renderTable({
+    identifyShoppingCart()$shoppingCart
+  })
+
+  output$withoutDiscount <- renderText({
+    infos <- identifyShoppingCart()$bestDiscount
+    oldPrice <- unname(infos["priceWithoutDiscount"])
+    newPrice <- unname(infos["priceInTotal"])
+    paste(
+      "Gesamtpreis:",
+      "<font color=\"#FF0000\"><s>", oldPrice, "</s></font>",
+      "      ", # empty space
+      "<font color=\"#00ff00\" size=\"20px\">", newPrice, "</font>"
+    )
   })
 }
 
