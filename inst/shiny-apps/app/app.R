@@ -88,13 +88,6 @@ ui <- fluidPage(
       3, offset = 2,
       uiOutput("goShoppingCart")
     )
-  ),
-  br(), # insert empty row
-  fluidRow(
-    column(
-      6, offset = 3,
-      verbatimTextOutput("price")
-    )
   )
 )
 
@@ -142,9 +135,12 @@ server <- function(input, output, server) {
   observeEvent(identifyShoppingCart(), {
     showModal(modalDialog(
       title = "Warenkorb",
-      fluidRow(column(12, tableOutput("shoppingCartTable"))),
+      fluidRow(
+        column(7, tableOutput("shoppingCartTable")),
+        column(5, htmlOutput("showDiscount", style="transform: rotate(40deg)"))
+      ),
       hr(), # draw a horizontal line
-      fluidRow(column(9, offset = 3, htmlOutput("withoutDiscount"))),
+      fluidRow(column(9, offset = 3, htmlOutput("price"))),
 
       footer = tagList(
         modalButton("Warenkorb ändern"),
@@ -157,15 +153,25 @@ server <- function(input, output, server) {
     identifyShoppingCart()$shoppingCart
   })
 
-  output$withoutDiscount <- renderText({
+  output$price <- renderText({
     infos <- identifyShoppingCart()$bestDiscount
     oldPrice <- unname(infos["priceWithoutDiscount"])
     newPrice <- unname(infos["priceInTotal"])
     paste(
       "Gesamtpreis:",
-      "<font color=\"#FF0000\"><s>", oldPrice, "</s></font>",
-      "      ", # empty space
-      "<font color=\"#00ff00\" size=\"20px\">", newPrice, "</font>"
+      "<font color=\"#FF0000\"><s>", oldPrice, "€", "</s></font>",
+      "<font color=\"#ffffff\">","xxxxxx", "</font>", # empty space
+      "<font color=\"#00ff00\" size=\"20px\">", newPrice, "€", "</font>"
+    )
+  })
+
+  output$showDiscount <- renderText({
+    infos <- identifyShoppingCart()$bestDiscount
+    discountPercent <- round(unname(infos["discountPercent"]), digits = 1)
+
+    paste(
+      "Sie sparen",
+      "<font color=\"#cd853f\" size=\"20px\">", discountPercent, "%", "</font>"
     )
   })
 }
