@@ -51,7 +51,7 @@ ui <- fluidPage(
       2, img(src = "dieKammerDesSchreckens.jpeg")
     ),
     column(
-      2, img(src = "derGefangeneVonAskaban_skaliert.jpg")
+      2, img(src = "derGefangeneVonAskaban.jpeg")
     ),
     column(
       2, img(src = "derFeuerkelch.jpeg")
@@ -280,7 +280,7 @@ server <- function(input, output, session) {
 
   output$welcome <- renderText({
     if (rV$counter == 3)
-      brick <- "Dem Entwickler vielleicht einen Kaffee kaufen?"
+      brick <- "Oh, ein Osterei. Dem Entwickler vielleicht einen Kaffee kaufen?"
     if (rV$counter == 10) brick <- "Dem Entwickler einen Kaffee kaufen!"
     if (rV$counter == 15)
       brick <- paste(
