@@ -118,3 +118,23 @@ test_that(
     expect_gte(ncol(discountSets), 1)
   }
 )
+
+test_that(
+  "combination 4,4 led to an error because extractDiscountSets() returned no
+  matrix but a numeric vector",
+  {
+    shoppingCart <- dplyr::bind_cols(
+      books,
+      number = c(4,4,0,0,0)
+    )
+    ls <- analyseShoppingCart(shoppingCart)
+    alternatives <- enumerateCombinations(ls)
+
+    discountSets <- extractDiscountSets(alternatives, ls$numbersOfEveryItem)
+
+    expect_is(discountSets, "matrix")
+
+    # and there should be only one possible solution: 2,2,2,2
+    expect_equal(discountSets[,1], c(2,2,2,2))
+  }
+)

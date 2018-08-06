@@ -75,7 +75,7 @@ extractDiscountSets <- function(
   correctDiscountSets <- alternatives[, correctDiscountSets]
 
   # for consistency: correctDiscountSets need to be a matrix:
-  if (is.numeric(correctDiscountSets))
+  if (! is.matrix(correctDiscountSets))
     correctDiscountSets <- matrix(correctDiscountSets, ncol = 1)
 
   if (isTRUE(intermediateSteps)) {
