@@ -5,6 +5,6 @@ account: frumentum
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 395976
-bundleId: 1520933
+bundleId: 1520961
 url: https://frumentum.shinyapps.io/buypottersavemoney/
-when: 1533570682.71992
+when: 1533571798.75568
